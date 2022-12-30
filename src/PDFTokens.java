@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.pdfbox.contentstream.operator.Operator;
 import org.apache.pdfbox.contentstream.operator.OperatorName;
 import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSFloat;
 import org.apache.pdfbox.cos.COSInteger;
 import org.apache.pdfbox.cos.COSName;
@@ -51,7 +52,6 @@ public class PDFTokens {
               OperatorName.SET_WORD_SPACING // Tw
           )));
 
-
   static String makeTokenString(Object token) {
     if (token instanceof COSName)
       return ((COSName) token).getName();
@@ -69,16 +69,16 @@ public class PDFTokens {
       return ((COSString) token).getString();
 
     if (token instanceof COSArray) {
-      List list = ((COSArray) token).toList();
+      List<? extends COSBase> list = ((COSArray) token).toList();
       return "[" + PDFTokens.makeLineString(list) + "]";
     }
 
     return token.toString();
   }
 
-  static String makeLineString(List<Object> tokens) {
+  static String makeLineString(List<? extends COSBase> tokens) {
     StringBuilder builder = new StringBuilder();
-    for (Object token : tokens) {
+    for (COSBase token : tokens) {
       builder.append(makeTokenString(token));
       builder.append(" ");
     }

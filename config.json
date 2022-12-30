@@ -1,16 +1,20 @@
 {
   "configName" : "Dummy config",
-  "inputFile" : "test.pdf",
-  "outputFile" : "test_output.pdf",
+  "inputFileName" : "kungen.pdf",
+  "outputFileName" : "test_output.pdf",
   "actions": [
     {
       "action" : "setMetadata",
-      "title" : "Alla kungens hästar, alla kungens män",
-      "creator" : "Mikael Bergström"
+      "title" : "Hej svejs",
+      "creator" : "Mikael Bergstrom",
+      "author" : "Mikael Bergstrom",
+      "producer" : "Mikael Bergstrom",
+      "subject" : "Forsta delen i en kampanj",
+      "keywords" : "rotsystem, cyberpunk, kampanj"
     },
     {
       "action" : "removeLayer",
-      "layerNames" : ["Första lagret"]
+      "layerNames" : ["Grid"]
     },
     {
       "action" : "addBlankPage",

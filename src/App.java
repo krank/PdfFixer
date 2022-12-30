@@ -1,4 +1,5 @@
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,21 +23,42 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 public class App {
   public static void main(String[] args) throws Exception {
 
-    String inputFilename = "kungen.pdf";
-    String outputFilename = "kungen_output.pdf";
+    // Load config
 
-    List<String> layersToRemove = new ArrayList<>(List.of("Grid", "Göm på PDF", "Guides and Grids"));
+    Path configFile = Paths.get("config.json");
+
+    Configuration configuration = new Configuration(configFile);
+
+    if (configuration.sanityCheck())
+    {
+      System.out.println("Config is valid.");
+    }
+    else
+    {
+      System.out.println("Config is not valid. Exiting");
+      return;
+    }
+
+
+    // Load input document
+    Path pdfFile = configuration.GetInputFile();
+    PDDocument document = Loader.loadPDF(pdfFile.toFile());
+
+    configuration.ApplyActionsTo(document);
+
+
+
+    // List<String> layersToRemove = new ArrayList<>(List.of("Grid", "Göm på PDF", "Guides and Grids"));
     
-    File pdfFile = new File(inputFilename);
+    // File pdfFile = new File(inputFilename);
 
-    PDDocument document = Loader.loadPDF(pdfFile);
+    // PDDocument document = Loader.loadPDF(pdfFile);
 
-    // Remove layers
-    PDFLayers.removeLayersAndContentsFromDocument(document, layersToRemove);
-
+    // // Remove layers
+    // PDFLayers.removeLayersAndContentsFromDocument(document, layersToRemove);
     
 
-    document.save(outputFilename);
+    document.save(configuration.GetOutputFileName());
     document.close();
   }
  
