@@ -1,0 +1,12 @@
+LAYERS (OCGs)
+
+Beginning match:
+CosName.OC
+CosName with PropertyList that is an OCG
+BMC
+
+End match:
+EMC
+
+https://stackoverflow.com/questions/49576411/using-pdfbox-to-remove-optional-content-groups-that-are-not-enabled
+https://stackoverflow.com/questions/45053923/how-to-delete-an-optional-content-group-alongwith-its-content-from-pdf-using-pdf

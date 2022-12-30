@@ -1,0 +1,29 @@
+{
+  "configName" : "Dummy config",
+  "inputFile" : "test.pdf",
+  "outputFile" : "test_output.pdf",
+  "actions": [
+    {
+      "action" : "setMetadata",
+      "title" : "Alla kungens hästar, alla kungens män",
+      "creator" : "Mikael Bergström"
+    },
+    {
+      "action" : "removeLayer",
+      "layerNames" : ["Första lagret"]
+    },
+    {
+      "action" : "addBlankPage",
+      "location" : "before",
+      "page" : 1
+    },
+    {
+      "action" : "insertPages",
+      "location" : "before",
+      "page" : 1,
+      "sourceFile" : "Omslag_separerade.pdf",
+      "sourcePageStart" : 1,
+      "sourcePageEnd" : 1
+    }
+  ]
+}
