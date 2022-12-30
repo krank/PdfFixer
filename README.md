@@ -1,18 +1,15 @@
-## Getting Started
+## PDF Fixer
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+The plan is for this to evolve into a simple commandline tool for manipulating PDF files. Currently it's just some experiments.
 
-## Folder Structure
+A rough plan:
 
-The workspace contains two folders by default, where:
-
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
-
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+* Read config from xml/json config files
+* (A simple UI for making configs)
+* ("Draft"/dryrun mode)
+* Modular design, be able to…
+  * Remove all items from specified layer, from all pages
+  * Delete specific pages
+  * Insert specific pages from one PDF into another, at specified locations (including first/last)
+  * Insert blank pages, at specific locations (first/last)
+  * Set title of PDF (Maybe other metadata)
