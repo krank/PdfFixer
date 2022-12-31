@@ -1,3 +1,5 @@
+package com.urverkspel.app;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
@@ -54,7 +56,7 @@ public class Configuration {
     }
   }
 
-  public void ApplyActionsTo(PDDocument document) {
+  public void ApplyActionsTo(PDDocument document) throws Exception {
     for (Action action : actions) {
       action.ApplyTo(document);
     }
@@ -95,7 +97,7 @@ public class Configuration {
 
     public abstract void Load(JSONObject configFragment);
 
-    public abstract void ApplyTo(PDDocument document);
+    public abstract void ApplyTo(PDDocument document) throws Exception;
   }
 
 }

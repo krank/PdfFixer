@@ -1,6 +1,15 @@
+package com.urverkspel.app;
+
+import java.io.InputStream;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
+import org.apache.xmpbox.XMPMetadata;
+import org.apache.xmpbox.schema.XMPSchema;
+import org.apache.xmpbox.xml.XmpSerializer;
+import org.apache.xmpbox.xml.DomXmpParser;
 import org.json.JSONObject;
 
 public class ActionMetadata extends Configuration.Action {
@@ -23,28 +32,44 @@ public class ActionMetadata extends Configuration.Action {
     subject = Configuration.GetStringIfKeyExists("subject", configFragment);
     keywords = Configuration.GetStringIfKeyExists("keywords", configFragment);
 
-
-
   }
 
   @Override
-  public void ApplyTo(PDDocument document) {
+  public void ApplyTo(PDDocument document) throws Exception {
     System.out.println("Editing metadata...");
 
     // http://useof.org/java-open-source/org.apache.pdfbox.pdmodel.common.PDMetadata
+
+    PDDocumentCatalog catalog = document.getDocumentCatalog();
+
+    PDMetadata metadata = catalog.getMetadata();
+    // XMPMetadata xmp = XMPMetadata.createXMPMetadata();
+
+    InputStream xmpStream = metadata.exportXMPMetadata();
+
+    byte[] xmpBytes = new byte[xmpStream.available()];
+    xmpBytes = xmpStream.readAllBytes();
+    String xmpString = new String(xmpBytes);
+    // XmpSerializer serializer = new XmpSerializer();
+
+    // DomXmpParser parser = new DomXmpParser();
+    
+
+    // XMPMetadata xmp = parser.parse(xmpBytes);
+
+    // for (XMPSchema schema : xmp.getAllSchemas()) {
+    //   System.out.println(schema);
+    // }
 
     // PDMetadata metadata = document.getDocumentCatalog().getMetadata();
 
     // metadata.
 
-    PDDocumentInformation information = document.getDocumentInformation();
+    applyClassic(document);
+  }
 
-    System.out.println(author);
-    System.out.println(creator);
-    System.out.println(producer);
-    System.out.println(title);
-    System.out.println(subject);
-    System.out.println(keywords);
+  private void applyClassic(PDDocument document) {
+    PDDocumentInformation information = document.getDocumentInformation();
 
     if (author != "")
       information.setAuthor(author);
@@ -59,11 +84,7 @@ public class ActionMetadata extends Configuration.Action {
     if (keywords != "")
       information.setKeywords(keywords);
 
-      
-
-    information.setAuthor("hehe");
-    System.out.println(information.getAuthor());
-
     document.setDocumentInformation(information);
   }
+
 }

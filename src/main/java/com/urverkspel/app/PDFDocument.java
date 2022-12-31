@@ -1,3 +1,5 @@
+package com.urverkspel.app;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
 
 public class PDFDocument {

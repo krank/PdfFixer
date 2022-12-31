@@ -1,10 +1,11 @@
+package com.urverkspel.app;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
+
 
 /* PLANS:
  * - TODO: Read config from xml/json
@@ -23,10 +24,10 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 public class App {
   public static void main(String[] args) throws Exception {
 
+    String configFilename = "config.json";
+
     // Load config
-
-    Path configFile = Paths.get("config.json");
-
+    Path configFile = Paths.get(configFilename);
     Configuration configuration = new Configuration(configFile);
 
     if (configuration.sanityCheck())
@@ -58,7 +59,7 @@ public class App {
     // PDFLayers.removeLayersAndContentsFromDocument(document, layersToRemove);
     
 
-    document.save(configuration.GetOutputFileName());
+    // document.save(configuration.GetOutputFileName());
     document.close();
   }
  
