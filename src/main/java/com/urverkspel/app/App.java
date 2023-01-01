@@ -12,14 +12,18 @@ import org.apache.pdfbox.pdmodel.PDDocument;
  * x TODO: Remove all items from specified layer, from all pages
  * x TODO: Set metadata
  * x TODO: Insert blank pages, at specific locations (first/last)
- * - TODO: JSON schema
- * - TODO: Delete specific pages
- * - TODO: OCProperties order (.indb?), replace names
+ * x TODO: JSON schema
+ * x TODO: Delete specific pages
+ * x TODO: Rename layer labels
  * - TODO: Insert specific pages from one PDF into another, at specified locations (including first/last)
- * - TODO: Extract page (range) to specified file
+ * - TODO: Make exe
+ * 
+ * - TODO: LOWPRIO Extract page (range) to specified file
+ * - TODO: LOWPRIO rename layers
+ * - TODO: LOWPRIO reorder layers
  * - TODO: LOWPRIO Dryruns & reports
- * - TODO: LOWPRIO Merge layers
  * - TODO: LOWPRIO Simple UI for making configs
+ * - TODO: LOWPRIO Merge layers
  * 
  * - TODO: Get array of PDPages from document based on range of pages (1-3, 5, 7-10)
  * 
@@ -61,9 +65,11 @@ public class App {
     System.out.println("Reading [" + pdfFile.toString() + "]");
     PDDocument document = Loader.loadPDF(pdfFile.toFile());
 
+    // Apply actions to document
     System.out.println("Applying actions:");
     configuration.ApplyActionsTo(document);
 
+    // Save resulting file
     System.out.println("Saving file to [" + configuration.GetOutputFileName() + "]");
     document.save(configuration.GetOutputFileName());
     document.close();

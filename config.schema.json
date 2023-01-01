@@ -140,16 +140,37 @@
               },
               "sourceFile": {
                 "description": "The PDF to get pages from",
-                "type":"string",
-                "minLength":4
+                "type": "string",
+                "minLength": 4
               },
               "sourcePageRange": {
                 "description": "The page range to get",
-                "type":"string",
+                "type": "string",
                 "minLength": 1
               }
             },
-            "required":["beforePage", "sourceFile", "sourcePageRange"]
+            "required": [
+              "beforePage",
+              "sourceFile",
+              "sourcePageRange"
+            ]
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "const": "renameLayerLabel"
+              },
+              "from": {
+                "description": "Current name. If empty or missing, will rename first label encountered",
+                "type": "string"
+              },
+              "to": {
+                "description": "New name",
+                "type": "string"
+              }
+            },
+            "required":["from"]
           }
         ]
       }

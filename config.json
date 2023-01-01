@@ -17,7 +17,7 @@
     },
     {
       "action": "removeLayers",
-      "layerNames": ["Grid"]
+      "layerNames": []
     },
     {
       "action": "deletePage",
@@ -36,6 +36,11 @@
       "beforePage": 1,
       "sourceFile": "Omslag_separerade.pdf",
       "sourcePageRange": "1"
+    },
+    {
+      "action": "renameLayerLabel",
+      "from": "Alla kungens hästar, alla kungens män.indb",
+      "to": "Alla Kungens Hästar"
     }
   ]
 }

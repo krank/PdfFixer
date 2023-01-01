@@ -15,11 +15,14 @@ import org.apache.pdfbox.pdmodel.documentinterchange.markedcontent.PDPropertyLis
 import org.apache.pdfbox.contentstream.operator.Operator;
 import org.apache.pdfbox.contentstream.operator.OperatorName;
 import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSObject;
+import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentGroup;
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentProperties;
+
 
 public class PDFLayers {
 
@@ -29,6 +32,33 @@ public class PDFLayers {
     String[] names = props.getGroupNames();
     for (String name : names) {
       System.out.println(name);
+    }
+  }
+
+  public static void renameLabel(PDDocument document, String oldName, String newName) {
+
+    // Find the D
+    COSDictionary d = (COSDictionary) document.getDocumentCatalog().getOCProperties().getCOSObject().getItem("D");
+
+    // Find the Order object & extract the array
+    COSObject orderCOS = (COSObject) d.getItem("Order");
+    COSArray orderArray = (COSArray) orderCOS.getObject();
+
+    COSObject orderSubCOS = (COSObject) orderArray.get(0);
+    COSArray orderSubArray = (COSArray) orderSubCOS.getObject();
+
+    // Iterate over the array and find the string we want to replace
+    for (int i = 0; i < orderSubArray.size(); i++) {
+      COSBase orderedItem = orderSubArray.get(i);
+      if (orderedItem instanceof COSString)
+      {
+        COSString labelString = (COSString) orderedItem;
+        if (labelString.getString().equals(oldName) || oldName.isBlank())
+        {
+          orderSubArray.set(i, new COSString(newName));
+          break;
+        }
+      }
     }
   }
 

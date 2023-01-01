@@ -33,9 +33,14 @@ public class Configuration {
     // Actions
 
     if (configObject.has("actions")) {
+
       JSONArray actionsArray = configObject.getJSONArray("actions");
 
-      for (Object potentialAction : actionsArray) {
+      System.out.println("Actions: " + actionsArray.length());
+
+      for (int i = 0; i < actionsArray.length(); i++) {
+        Object potentialAction = actionsArray.get(i);
+
         if (potentialAction instanceof JSONObject && ((JSONObject) potentialAction).has("action")) {
 
           JSONObject actionConfig = (JSONObject) potentialAction;
@@ -51,17 +56,18 @@ public class Configuration {
             newAction = new ActionBlankPageInsert();
           } else if (actionName.equals("deletePage")) {
             newAction = new ActionPageDelete();
-          }
-          else {
-            break;
+          } else if (actionName.equals("renameLayerLabel")) {
+            newAction = new ActionLabelRename();
+          } else {
+            continue;
           }
 
           newAction.Load(actionConfig);
           actions.add(newAction);
 
+        }
       }
     }
-  }
 
   }
 

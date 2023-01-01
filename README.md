@@ -5,12 +5,12 @@ The plan is for this to evolve into a simple commandline tool for manipulating P
 ### Functionality
 * Read configuration from json
 * Insert blank pages
+* Removing specific pages
 * Removing PDF layers including contents
 * Edit metadata (Title, Author, Description & Keywords), both XMP & classic
+* Modifying layer label names
 
 ### Planned functionality
 * Insert pages from other PDFs
-* Removing specific pages
-* Modifying layer order & names
-* Dryruns & reports
-* Extract pages to new PDF
+* Maybe: Dryruns & reports
+* Maybe: Extract pages to new PDF
