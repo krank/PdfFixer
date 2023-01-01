@@ -15,6 +15,10 @@
       "layerNames" : []
     },
     {
+      "action" : "removePage",
+      "pageNumber" : 1
+    },
+    {
       "action" : "addBlankPage",
       "beforePage" : 2000
     },

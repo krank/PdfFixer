@@ -7,16 +7,19 @@ import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
 /* PLANS:
+ * x TODO: Modular design
  * x TODO: Read config from xml/json
- * - TODO: Simple UI for making configs
- * - TODO: Insert specific pages from one PDF into another, at specified locations (including first/last)
- * - TODO: Insert blank pages, at specific locations (first/last)
- * - TODO: Delete specific pages
  * x TODO: Remove all items from specified layer, from all pages
  * x TODO: Set metadata
+ * x TODO: Insert blank pages, at specific locations (first/last)
+ * - TODO: JSON schema
+ * - TODO: Delete specific pages
+ * - TODO: OCProperties order (.indb?), replace names
+ * - TODO: Insert specific pages from one PDF into another, at specified locations (including first/last)
  * - TODO: Extract page (range) to specified file
- * x TODO: Modular design
- * - TODO: Dryruns & reports
+ * - TODO: LOWPRIO Dryruns & reports
+ * - TODO: LOWPRIO Merge layers
+ * - TODO: LOWPRIO Simple UI for making configs
  * 
  * - BUG: Adobe uses XMP "description" for Subject, and "Subject" for keywords
  */
@@ -28,8 +31,19 @@ public class App {
 
     String configFilename = "config.json";
 
+    if (args.length > 0) {
+      configFilename = args[0];
+    }
+
     // Load config
     Path configFile = Paths.get(configFilename);
+
+    if (!configFile.toFile().exists()) {
+      System.out.println("Config file '" + configFile + "' does not exist. Exiting");
+      return;
+    }
+
+
     Configuration configuration = new Configuration(configFile);
 
     if (!configuration.sanityCheck()) {
@@ -48,15 +62,7 @@ public class App {
     System.out.println("Applying actions:");
     configuration.ApplyActionsTo(document);
 
-    // List<String> layersToRemove = new ArrayList<>(List.of("Grid", "Göm på PDF",
-    // "Guides and Grids"));
-    // File pdfFile = new File(inputFilename);
-    // PDDocument document = Loader.loadPDF(pdfFile);
-
-    // // Remove layers
-    // PDFLayers.removeLayersAndContentsFromDocument(document, layersToRemove);
-
-    System.out.println("Saving file...");
+    System.out.println("Saving file to [" + configuration.GetOutputFileName() + "]");
     document.save(configuration.GetOutputFileName());
     document.close();
   }

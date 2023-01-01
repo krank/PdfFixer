@@ -51,7 +51,8 @@ public class PDFPages {
   }
 
   public static void deletePage(PDDocument document, int pageNum) {
-    // STUB
+    PDPage page = getPageFromDocument(document, pageNum);
+    document.removePage(page);
   }
 
   public static void insertBlankPageBefore(PDDocument document, int pageNum) {
@@ -79,7 +80,8 @@ public class PDFPages {
   }
 
   public static PDPage getPageFromDocument(PDDocument document, int pageNum) {
-    // Adobe: If page number is out of bounds, use first or last page
+
+    // If page number is out of bounds, use first or last page
     if (pageNum < 0) {
       pageNum = 0;
     } else if (pageNum >= document.getNumberOfPages()) {
