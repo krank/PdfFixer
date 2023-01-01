@@ -1,71 +1,96 @@
 package com.urverkspel.app;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
-import org.apache.xmpbox.XMPMetadata;
-import org.apache.xmpbox.schema.XMPSchema;
-import org.apache.xmpbox.xml.XmpSerializer;
-import org.apache.xmpbox.xml.DomXmpParser;
 import org.json.JSONObject;
+
+import com.adobe.internal.xmp.XMPConst;
+import com.adobe.internal.xmp.XMPMeta;
+import com.adobe.internal.xmp.impl.XMPMetaParser;
+import com.adobe.internal.xmp.impl.XMPSerializerRDF;
+import com.adobe.internal.xmp.options.PropertyOptions;
+import com.adobe.internal.xmp.options.SerializeOptions;
+
+// https://javadoc.io/static/com.adobe.xmp/xmpcore/6.0.6/overview-summary.html
+// http://useof.org/java-open-source/org.apache.pdfbox.pdmodel.common.PDMetadata
 
 public class ActionMetadata extends Configuration.Action {
 
-  String author;
-  String creator;
-  String producer;
-
   String title;
-  String subject;
-  String keywords;
+  String author;
+  String description;
+  String[] keywords;
+
+  static XMPSerializerRDF serializer = new XMPSerializerRDF();
 
   @Override
   public void Load(JSONObject configFragment) {
 
-    author = Configuration.GetStringIfKeyExists("author", configFragment);
-    creator = Configuration.GetStringIfKeyExists("creator", configFragment);
-    producer = Configuration.GetStringIfKeyExists("producer", configFragment);
     title = Configuration.GetStringIfKeyExists("title", configFragment);
-    subject = Configuration.GetStringIfKeyExists("subject", configFragment);
-    keywords = Configuration.GetStringIfKeyExists("keywords", configFragment);
+    author = Configuration.GetStringIfKeyExists("author", configFragment);
+    description = Configuration.GetStringIfKeyExists("subject", configFragment);
 
+    keywords = Configuration.GetStringArrayIfKeyExists("keywords", configFragment);
   }
 
   @Override
   public void ApplyTo(PDDocument document) throws Exception {
-    System.out.println("Editing metadata...");
-
-    // http://useof.org/java-open-source/org.apache.pdfbox.pdmodel.common.PDMetadata
-
-    PDDocumentCatalog catalog = document.getDocumentCatalog();
-
-    PDMetadata metadata = catalog.getMetadata();
-    // XMPMetadata xmp = XMPMetadata.createXMPMetadata();
-
-    InputStream xmpStream = metadata.exportXMPMetadata();
-
-    byte[] xmpBytes = new byte[xmpStream.available()];
-    xmpBytes = xmpStream.readAllBytes();
-    String xmpString = new String(xmpBytes);
-    // XmpSerializer serializer = new XmpSerializer();
-
-    // DomXmpParser parser = new DomXmpParser();
-    
-
-    // XMPMetadata xmp = parser.parse(xmpBytes);
-
-    // for (XMPSchema schema : xmp.getAllSchemas()) {
-    //   System.out.println(schema);
-    // }
-
-    // PDMetadata metadata = document.getDocumentCatalog().getMetadata();
-
-    // metadata.
 
     applyClassic(document);
+
+    // Get metadata from object & parse it to Adobe xmp's XMPMeta
+    PDMetadata metadata = document.getDocumentCatalog().getMetadata();
+    InputStream xmpInputStream = metadata.exportXMPMetadata();
+
+    byte[] xmpBytes = xmpInputStream.readAllBytes();
+    XMPMeta meta = XMPMetaParser.parse(xmpBytes, null);
+
+    // Do the changes
+    setXmpArrayProperty(meta, "creator", author);
+    setXmpArrayProperty(meta, "title", title);
+    setXmpArrayProperty(meta, "description", description);
+    setXmpArrayProperty(meta, "subject", keywords);
+
+    // Serialize the XMPMeta & convert it back to an OutputStream so PDFBox'
+    // metadata can ingest it
+    OutputStream xmpOutputStream = new ByteArrayOutputStream();
+
+    serializer.serialize(meta, xmpOutputStream, new SerializeOptions());
+    xmpBytes = xmpOutputStream.toString().getBytes();
+
+    // System.out.println(xmpOutputStream.toString());
+
+    metadata.importXMPMetadata(xmpBytes);
+    document.getDocumentCatalog().setMetadata(metadata);
+  }
+
+  private void setXmpArrayProperty(XMPMeta meta, String propName, String value) throws Exception {
+
+    if (value.isBlank())
+      return;
+
+    meta.setArrayItem(XMPConst.NS_DC, propName, 1, value);
+  }
+
+  private void setXmpArrayProperty(XMPMeta meta, String propName, String[] value) throws Exception {
+
+    // Completely clear/remove the old array
+    if (meta.doesPropertyExist(XMPConst.NS_DC, propName)) {
+      meta.deleteProperty(XMPConst.NS_DC, propName);
+    }
+
+    PropertyOptions options = new PropertyOptions();
+    options.setArray(true);
+
+    // Append the new items
+    for (String part : value) {
+      meta.appendArrayItem(XMPConst.NS_DC, propName, options, part, null);
+    }
   }
 
   private void applyClassic(PDDocument document) {
@@ -73,18 +98,19 @@ public class ActionMetadata extends Configuration.Action {
 
     if (author != "")
       information.setAuthor(author);
-    if (creator != "")
-      information.setCreator(creator);
-    if (producer != "")
-      information.setProducer(producer);
     if (title != "")
       information.setTitle(title);
-    if (subject != "")
-      information.setSubject(subject);
-    if (keywords != "")
-      information.setKeywords(keywords);
+    if (description != "")
+      information.setSubject(description);
+    if (keywords.length > 0)
+      information.setKeywords(String.join(",", keywords));
 
     document.setDocumentInformation(information);
+  }
+
+  @Override
+  public String GetName() {
+    return "Edit metadata";
   }
 
 }

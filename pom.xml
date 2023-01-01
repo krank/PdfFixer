@@ -22,25 +22,21 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.apache.pdfbox</groupId>
-      <artifactId>xmpbox</artifactId>
-      <version>3.0.0-RC1</version>
-      <!-- <type>bundle</type> -->
+      <groupId>com.adobe.xmp</groupId>
+      <artifactId>xmpcore</artifactId>
+      <version>6.1.11</version>
     </dependency>
-
 
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
       <version>20220320</version>
-      <!-- <type>bundle</type> -->
     </dependency>
 
     <dependency>
       <groupId>org.apache.pdfbox</groupId>
       <artifactId>pdfbox</artifactId>
-      <version>3.0.0-RC1</version>
-      <!-- <type>bundle</type> -->
+      <version>3.0.0-alpha3</version>
     </dependency>
 
     <dependency>

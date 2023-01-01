@@ -6,10 +6,10 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.jar.JarEntry;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Configuration {
@@ -26,9 +26,9 @@ public class Configuration {
 
     JSONObject configObject = new JSONObject(configJson);
 
-    name = configObject.has("configName") ? configObject.get("configName").toString() : "";
-    inputFileName = configObject.has("inputFileName") ? configObject.get("inputFileName").toString() : "";
-    outputFileName = configObject.has("outputFileName") ? configObject.get("outputFileName").toString() : "";
+    name = GetStringIfKeyExists("configName", configObject);
+    inputFileName = GetStringIfKeyExists("inputFileName", configObject);
+    outputFileName = GetStringIfKeyExists("outputFileName", configObject);
 
     // Actions
 
@@ -58,31 +58,74 @@ public class Configuration {
 
   public void ApplyActionsTo(PDDocument document) throws Exception {
     for (Action action : actions) {
+      System.out.println(" " + action.GetName());
       action.ApplyTo(document);
     }
   }
 
   public Boolean sanityCheck() {
+    Path outputFile = null;
+    Path inputFile = null;
 
-    // Check input file
+    // Check input & output file validity
+    try {
+      outputFile = Paths.get(outputFileName);
+      inputFile = Paths.get(inputFileName);
+    } catch (InvalidPathException ex) {
+      if (outputFile == null)
+        System.out.println("Output file not valid");
+      if (inputFile == null)
+        System.out.println("input file not valid");
+      return false;
+    }
+
+    // Check input file exists & is readable
     if (Files.notExists(GetInputFile())) {
       System.out.println("Input file not found");
       return false;
     }
 
-    // Check output file
-    try {
-      Paths.get(outputFileName);
-    } catch (InvalidPathException ex) {
-      System.out.println("Output file not valid");
+    if (!Files.isReadable(inputFile)) {
+      System.out.println("Input file not readable");
       return false;
     }
 
+    if (Files.exists(outputFile) && !Files.isWritable(outputFile)) {
+      System.out.println("Output file not writable");
+      return false;
+    }
+
+    // Check that input and output files are different
+    if (outputFile.toAbsolutePath().equals(inputFile.toAbsolutePath())) {
+      System.out.println("Output file & input file cannot be the same");
+      return false;
+    }
+
+    System.out.println("Config is valid.");
     return true;
   }
 
   public static String GetStringIfKeyExists(String key, JSONObject object) {
     return object.has(key) ? object.get(key).toString() : "";
+  }
+
+  public static String[] GetStringArrayIfKeyExists(String key, JSONObject object) {
+
+    JSONArray items;
+
+    try {
+      items = object.getJSONArray(key);
+    } catch (JSONException e) {
+      return new String[0];
+    }
+
+    String[] stringArray = new String[items.length()];
+
+    for (int i = 0; i < stringArray.length; i++) {
+      stringArray[i] = items.getString(i);
+    }
+
+    return stringArray;
   }
 
   public Path GetInputFile() {
@@ -93,11 +136,17 @@ public class Configuration {
     return outputFileName;
   }
 
+  public String getName() {
+    return name;
+  }
+
   public static abstract class Action {
 
     public abstract void Load(JSONObject configFragment);
 
     public abstract void ApplyTo(PDDocument document) throws Exception;
+
+    public abstract String GetName();
   }
 
 }

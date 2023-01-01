@@ -5,12 +5,10 @@
   "actions": [
     {
       "action" : "setMetadata",
-      "title" : "Hej svejs",
-      "creator" : "Mikael Bergstrom",
-      "author" : "Mikael Bergstrom",
-      "producer" : "Mikael Bergstrom",
-      "subject" : "Forsta delen i en kampanj",
-      "keywords" : "rotsystem, cyberpunk, kampanj"
+      "title" : "Alla kungens hästar, alla kungens män",
+      "author" : "Mikael Bergström",
+      "description" : "Forsta delen i en kampanj",
+      "keywords" : ["rotsystem", "cyberpunk", "kampanj"]
     },
     {
       "action" : "removeLayer",
