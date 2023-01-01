@@ -2,14 +2,15 @@
 
 The plan is for this to evolve into a simple commandline tool for manipulating PDF files. Currently it's just some experiments.
 
-A rough plan:
+### Functionality
+* Read configuration from json
+* Insert blank pages
+* Removing PDF layers including contents
+* Edit metadata (Title, Author, Description & Keywords), both XMP & classic
 
-* Read config from xml/json config files
-* (A simple UI for making configs)
-* ("Draft"/dryrun mode)
-* Modular design, be able to…
-  * Remove all items from specified layer, from all pages
-  * Delete specific pages
-  * Insert specific pages from one PDF into another, at specified locations (including first/last)
-  * Insert blank pages, at specific locations (first/last)
-  * Set title of PDF (Maybe other metadata)
+### Planned functionality
+* Insert pages from other PDFs
+* Removing specific pages
+* Modifying layer order & names
+* Dryruns & reports
+* Extract pages to new PDF

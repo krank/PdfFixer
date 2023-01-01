@@ -21,6 +21,8 @@ import org.apache.pdfbox.pdmodel.PDDocument;
  * - TODO: LOWPRIO Merge layers
  * - TODO: LOWPRIO Simple UI for making configs
  * 
+ * - TODO: Get array of PDPages from document based on range of pages (1-3, 5, 7-10)
+ * 
  * - BUG: Adobe uses XMP "description" for Subject, and "Subject" for keywords
  */
 
