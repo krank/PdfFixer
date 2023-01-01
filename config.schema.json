@@ -1,0 +1,164 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "configName": {
+      "description": "The name of the configuration",
+      "type": "string"
+    },
+    "inputFileName": {
+      "description": "The PDF file to read from; must be a valid PDF file.",
+      "type": "string"
+    },
+    "outputFileName": {
+      "description": "The main PDF file to write changes to; must be different from inputFileName",
+      "type": "string"
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "description": "The action to be taken"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "oneOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "const": "setMetadata"
+              },
+              "title": {
+                "description": "The new title",
+                "type": "string"
+              },
+              "author": {
+                "description": "The new author",
+                "type": "string"
+              },
+              "description": {
+                "description": "The new description",
+                "type": "string"
+              },
+              "keywords": {
+                "description": "The new keywords",
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "anyOf": [
+              {
+                "required": [
+                  "title"
+                ]
+              },
+              {
+                "required": [
+                  "author"
+                ]
+              },
+              {
+                "required": [
+                  "description"
+                ]
+              },
+              {
+                "required": [
+                  "keywords"
+                ]
+              }
+            ]
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "const": "removeLayers"
+              },
+              "layerNames": {
+                "description": "The layers to remove",
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "layerNames"
+            ]
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "const": "deletePage"
+              },
+              "pageNumber": {
+                "description": "The page to delete",
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "pageNumber"
+            ]
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "const": "addBlankPage"
+              },
+              "beforePage": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "required": [
+              "beforePage"
+            ]
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "const": "insertPages"
+              },
+              "beforePage": {
+                "description": "Where in the PDF to add the new pages",
+                "type": "integer",
+                "minimum": 1
+              },
+              "sourceFile": {
+                "description": "The PDF to get pages from",
+                "type":"string",
+                "minLength":4
+              },
+              "sourcePageRange": {
+                "description": "The page range to get",
+                "type":"string",
+                "minLength": 1
+              }
+            },
+            "required":["beforePage", "sourceFile", "sourcePageRange"]
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "configName",
+    "inputFileName",
+    "outputFileName",
+    "actions"
+  ]
+}

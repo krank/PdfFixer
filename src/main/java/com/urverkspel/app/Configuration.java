@@ -48,8 +48,11 @@ public class Configuration {
           } else if (actionName.equals("removeLayers")) {
             newAction = new ActionLayerRemoval();
           } else if (actionName.equals("addBlankPage")) {
-            newAction = new ActionPageInsert();
-          } else {
+            newAction = new ActionBlankPageInsert();
+          } else if (actionName.equals("deletePage")) {
+            newAction = new ActionPageDelete();
+          }
+          else {
             break;
           }
 

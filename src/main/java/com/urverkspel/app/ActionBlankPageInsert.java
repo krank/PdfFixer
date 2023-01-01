@@ -3,7 +3,7 @@ package com.urverkspel.app;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.json.JSONObject;
 
-public class ActionPageInsert extends Configuration.Action {
+public class ActionBlankPageInsert extends Configuration.Action {
 
   int pageTarget = 0;
 

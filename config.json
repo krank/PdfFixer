@@ -1,38 +1,41 @@
 {
-  "configName" : "Dummy config",
-  "inputFileName" : "kungen.pdf",
-  "outputFileName" : "test_output.pdf",
+  "$schema": "./config.schema.json",
+  "configName": "Dummy config",
+  "inputFileName": "kungen.pdf",
+  "outputFileName": "test_output.pdf",
   "actions": [
     {
-      "action" : "setMetadata",
-      "title" : "Alla kungens hästar, alla kungens män",
-      "author" : "Mikael Bergström",
-      "description" : "Forsta delen i en kampanj",
-      "keywords" : ["rotsystem", "cyberpunk", "kampanj"]
+      "action": "setMetadata",
+      "title": "Alla kungens hästar, alla kungens män",
+      "author": "Mikael Bergström",
+      "description": "Forsta delen i en kampanj",
+      "keywords": [
+        "rotsystem",
+        "cyberpunk",
+        "kampanj"
+      ]
     },
     {
-      "action" : "removeLayers",
-      "layerNames" : []
+      "action": "removeLayers",
+      "layerNames": ["Grid"]
     },
     {
-      "action" : "removePage",
-      "pageNumber" : 1
+      "action": "deletePage",
+      "pageNumber": 1
     },
     {
-      "action" : "addBlankPage",
-      "beforePage" : 2000
+      "action": "addBlankPage",
+      "beforePage": 2000
     },
     {
-      "action" : "addBlankPage",
-      "beforePage" : 2
+      "action": "addBlankPage",
+      "beforePage": 1
     },
     {
-      "action" : "insertPages",
-      "location" : "before",
-      "page" : 1,
-      "sourceFile" : "Omslag_separerade.pdf",
-      "sourcePageStart" : 1,
-      "sourcePageEnd" : 1
+      "action": "insertPages",
+      "beforePage": 1,
+      "sourceFile": "Omslag_separerade.pdf",
+      "sourcePageRange": "1"
     }
   ]
 }
