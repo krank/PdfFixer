@@ -12,12 +12,11 @@ import org.apache.pdfbox.pdmodel.PDDocument;
  * - TODO: Insert specific pages from one PDF into another, at specified locations (including first/last)
  * - TODO: Insert blank pages, at specific locations (first/last)
  * - TODO: Delete specific pages
- * / TODO: Remove all items from specified layer, from all pages
+ * x TODO: Remove all items from specified layer, from all pages
  * x TODO: Set metadata
  * - TODO: Modular design
  * - TODO: Dryruns & reports
  * 
- * - BUG: PDFBox has bug. Keywords are always appended, never replaced
  * - BUG: Adobe uses XMP "description" for Subject, and "Subject" for keywords
  */
 

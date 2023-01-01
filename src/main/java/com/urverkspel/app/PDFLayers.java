@@ -21,9 +21,6 @@ import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentGroup;
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentProperties;
 
-// TODO: Generate report
-// TODO: General dryrun support
-
 public class PDFLayers {
 
   public static void printLayerNames(PDDocument document) {
@@ -42,7 +39,6 @@ public class PDFLayers {
     PDPageTree pageTree = document.getPages();
 
     for (int i = 0; i < pageTree.getCount(); i++) {
-      System.out.println("Processing page " + i);
       PDPage page = pageTree.get(i);
       removeLayerContentFromPage(page, layersToRemove, document);
     }
@@ -191,4 +187,5 @@ public class PDFLayers {
 
     return ((PDOptionalContentGroup) pList).getName();
   }
+
 }

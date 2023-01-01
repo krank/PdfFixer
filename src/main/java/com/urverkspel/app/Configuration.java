@@ -45,6 +45,8 @@ public class Configuration {
 
           if (actionName.equals("setMetadata")) {
             newAction = new ActionMetadata();
+          } else if (actionName.equals("removeLayers")) {
+            newAction = new ActionLayerRemoval();
           } else {
             break;
           }

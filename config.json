@@ -11,7 +11,7 @@
       "keywords" : ["rotsystem", "cyberpunk", "kampanj"]
     },
     {
-      "action" : "removeLayer",
+      "action" : "removeLayers",
       "layerNames" : ["Grid"]
     },
     {
