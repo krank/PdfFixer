@@ -86,7 +86,7 @@ public class PDFLayers {
     COSDictionary ocgsDict = (COSDictionary) props.getCOSObject();
     COSArray ocgs = (COSArray) ocgsDict.getItem(COSName.OCGS);
 
-    List<Integer> toRemove = new ArrayList<>();
+    List<Integer> toRemove = new ArrayList<Integer>();
 
     for (int i = 0; i < ocgs.size(); i++) {
 
@@ -119,7 +119,7 @@ public class PDFLayers {
 
     String currentLayer = null;
     int mcLevel = 0;
-    ArrayList<Object> line = new ArrayList<>();
+    ArrayList<Object> line = new ArrayList<Object>();
 
     // Go through all tokens
     for (int i = 0; i < tokens.size(); i++) {

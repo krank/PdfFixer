@@ -15,12 +15,15 @@ import org.apache.pdfbox.pdmodel.PDDocument;
  * x TODO: JSON schema
  * x TODO: Delete specific pages
  * x TODO: Rename layer labels
+ * x TODO: Make exe
+ * - TODO: Use config file's working directory as base for relative paths
  * - TODO: Insert specific pages from one PDF into another, at specified locations (including first/last)
- * - TODO: Make exe
  * 
  * - TODO: LOWPRIO Extract page (range) to specified file
  * - TODO: LOWPRIO rename layers
  * - TODO: LOWPRIO reorder layers
+ * - TODO: LOWPRIO move layer to another label
+ * - TODO: LOWPRIO create new label
  * - TODO: LOWPRIO Dryruns & reports
  * - TODO: LOWPRIO Simple UI for making configs
  * - TODO: LOWPRIO Merge layers
@@ -33,7 +36,10 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 // TODO: Check whatever fuckery InDesign does with its nestings - multiple titles?
 
 public class App {
+
   public static void main(String[] args) throws Exception {
+
+    System.out.println("--- PDF Fixer ---");
 
     String configFilename = "config.json";
 
@@ -48,7 +54,6 @@ public class App {
       System.out.println("Config file '" + configFile + "' does not exist. Exiting");
       return;
     }
-
 
     Configuration configuration = new Configuration(configFile);
 
@@ -74,5 +79,4 @@ public class App {
     document.save(configuration.GetOutputFileName());
     document.close();
   }
-
 }

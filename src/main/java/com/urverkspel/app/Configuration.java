@@ -18,7 +18,7 @@ public class Configuration {
   private String inputFileName;
   private String outputFileName;
 
-  private ArrayList<Action> actions = new ArrayList<>();
+  private ArrayList<Action> actions = new ArrayList<Action>();
 
   public Configuration(Path jsonConfigFile) throws IOException {
 

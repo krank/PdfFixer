@@ -21,7 +21,7 @@ import org.apache.pdfbox.pdmodel.common.PDStream;
 public class PDFTokens {
 
   public static final List<String> gfxContextOperators = Collections.unmodifiableList(
-      new ArrayList<>(
+      new ArrayList<String>(
           List.of(
               OperatorName.STROKING_COLORSPACE, // CS
               OperatorName.NON_STROKING_COLORSPACE, // cs
