@@ -47,15 +47,19 @@ public class Configuration {
             newAction = new ActionMetadata();
           } else if (actionName.equals("removeLayers")) {
             newAction = new ActionLayerRemoval();
+          } else if (actionName.equals("addBlankPage")) {
+            newAction = new ActionPageInsert();
           } else {
             break;
           }
 
           newAction.Load(actionConfig);
           actions.add(newAction);
-        }
+
       }
     }
+  }
+
   }
 
   public void ApplyActionsTo(PDDocument document) throws Exception {
@@ -108,7 +112,19 @@ public class Configuration {
   }
 
   public static String GetStringIfKeyExists(String key, JSONObject object) {
-    return object.has(key) ? object.get(key).toString() : "";
+    try {
+      return object.getString(key);
+    } catch (JSONException e) {
+      return "";
+    }
+  }
+
+  public static Integer GetIntegerIfKeyExists(String key, JSONObject object) {
+    try {
+      return object.getInt(key);
+    } catch (JSONException e) {
+      return -1;
+    }
   }
 
   public static String[] GetStringArrayIfKeyExists(String key, JSONObject object) {

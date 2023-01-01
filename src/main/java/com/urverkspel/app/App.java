@@ -7,14 +7,15 @@ import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
 /* PLANS:
- * - TODO: Read config from xml/json
+ * x TODO: Read config from xml/json
  * - TODO: Simple UI for making configs
  * - TODO: Insert specific pages from one PDF into another, at specified locations (including first/last)
  * - TODO: Insert blank pages, at specific locations (first/last)
  * - TODO: Delete specific pages
  * x TODO: Remove all items from specified layer, from all pages
  * x TODO: Set metadata
- * - TODO: Modular design
+ * - TODO: Extract page (range) to specified file
+ * x TODO: Modular design
  * - TODO: Dryruns & reports
  * 
  * - BUG: Adobe uses XMP "description" for Subject, and "Subject" for keywords

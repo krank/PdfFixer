@@ -12,12 +12,15 @@
     },
     {
       "action" : "removeLayers",
-      "layerNames" : ["Grid"]
+      "layerNames" : []
     },
     {
       "action" : "addBlankPage",
-      "location" : "before",
-      "page" : 1
+      "beforePage" : 2000
+    },
+    {
+      "action" : "addBlankPage",
+      "beforePage" : 2
     },
     {
       "action" : "insertPages",

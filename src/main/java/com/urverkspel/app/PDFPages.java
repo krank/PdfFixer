@@ -54,8 +54,40 @@ public class PDFPages {
     // STUB
   }
 
-  public static void insertBlankPage(PDDocument document, int pageNum) {
-    // STUB
+  public static void insertBlankPageBefore(PDDocument document, int pageNum) {
+
+    // Adobe: Always previous page, unless first, then use previous first
+    PDPage prototype = getPageFromDocument(document, pageNum - 1);
+
+    // Create new page & set boxes
+    PDPage newPage = new PDPage(prototype.getMediaBox());
+    newPage.setArtBox(prototype.getArtBox());
+    newPage.setBleedBox(prototype.getBleedBox());
+    newPage.setCropBox(prototype.getCropBox());
+
+    // Insert new page
+    PDPage currentPageAtLocation = getPageFromDocument(document, pageNum);
+
+    if (document.getNumberOfPages() == 0) {
+      document.addPage(newPage);
+    } else if (pageNum < document.getNumberOfPages()) {
+      document.getPages().insertBefore(newPage, currentPageAtLocation);
+    } else {
+      document.getPages().insertAfter(newPage, currentPageAtLocation);
+    }
+
+  }
+
+  public static PDPage getPageFromDocument(PDDocument document, int pageNum) {
+    // Adobe: If page number is out of bounds, use first or last page
+    if (pageNum < 0) {
+      pageNum = 0;
+    } else if (pageNum >= document.getNumberOfPages()) {
+      pageNum = document.getNumberOfPages() - 1;
+    }
+
+    return document.getPage(pageNum);
+
   }
 
   public static void insertPageFrom(PDDocument targetDocument, int targetPageNum, PDDocument sourceDocument,
