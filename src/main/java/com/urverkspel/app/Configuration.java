@@ -36,8 +36,6 @@ public class Configuration {
 
       JSONArray actionsArray = configObject.getJSONArray("actions");
 
-      System.out.println("Actions: " + actionsArray.length());
-
       for (int i = 0; i < actionsArray.length(); i++) {
         Object potentialAction = actionsArray.get(i);
 
@@ -73,8 +71,9 @@ public class Configuration {
 
   public void ApplyActionsTo(PDDocument document) throws Exception {
     for (Action action : actions) {
-      System.out.println(" " + action.GetName());
+      System.out.print(" * " + action.GetName() + " ...");
       action.ApplyTo(document);
+      System.out.println(" done.");
     }
   }
 

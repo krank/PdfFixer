@@ -8,7 +8,6 @@ import org.apache.pdfbox.pdfparser.PDFStreamParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDStream;
 import org.apache.pdfbox.pdmodel.documentinterchange.markedcontent.PDPropertyList;
@@ -62,23 +61,8 @@ public class PDFLayers {
     }
   }
 
-  public static void removeLayersAndContentsFromDocument(PDDocument document, List<String> layersToRemove)
-      throws IOException {
 
-    // Remove contents from all pages
-    PDPageTree pageTree = document.getPages();
-
-    for (int i = 0; i < pageTree.getCount(); i++) {
-      PDPage page = pageTree.get(i);
-      removeLayerContentFromPage(page, layersToRemove, document);
-    }
-
-    // Remove the groups themselves
-    removeLayersFromDocumentCatalog(document.getDocumentCatalog(),
-        layersToRemove);
-  }
-
-  private static void removeLayersFromDocumentCatalog(PDDocumentCatalog catalog, List<String> layersToRemove) {
+  public static void removeLayersFromDocumentCatalog(PDDocumentCatalog catalog, List<String> layersToRemove) {
 
     PDOptionalContentProperties props = catalog.getOCProperties();
 
@@ -105,7 +89,7 @@ public class PDFLayers {
     ocgsDict.setItem(COSName.OCGS, ocgs);
   }
 
-  private static void removeLayerContentFromPage(PDPage page, List<String> layersToRemove, PDDocument document)
+  public static void removeLayerContentFromPage(PDPage page, List<String> layersToRemove, PDDocument document)
       throws IOException {
 
     PDResources resources = page.getResources();

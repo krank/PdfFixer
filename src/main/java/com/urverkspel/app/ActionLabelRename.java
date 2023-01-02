@@ -21,7 +21,7 @@ public class ActionLabelRename extends Configuration.Action {
 
   @Override
   public String GetName() {
-    return "Renaming label " + oldLabel + " to " + newLabel + ".";
+    return "Renaming label " + oldLabel + " to " + newLabel;
   }
 
   

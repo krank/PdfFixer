@@ -19,7 +19,7 @@ public class ActionPageDelete extends Configuration.Action {
 
   @Override
   public String GetName() {
-    return "Removing page " + (pageTarget + 1) + ".";
+    return "Removing page " + (pageTarget + 1);
   }
 
 }

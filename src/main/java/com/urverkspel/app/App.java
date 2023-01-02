@@ -1,7 +1,6 @@
 package com.urverkspel.app;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -19,11 +18,13 @@ import org.apache.pdfbox.pdmodel.PDDocument;
  * - TODO: Use config file's working directory as base for relative paths
  * - TODO: Insert specific pages from one PDF into another, at specified locations (including first/last)
  * 
- * - TODO: LOWPRIO Extract page (range) to specified file
+ * - TODO: LOWPRIO Extract page/s (range) to specified file
  * - TODO: LOWPRIO rename layers
  * - TODO: LOWPRIO reorder layers
- * - TODO: LOWPRIO move layer to another label
+ * - TODO: LOWPRIO move layer to below another label
  * - TODO: LOWPRIO create new label
+ * - TODO: LOWPRIO delete label
+ * - TODO: LOWPRIO moving/reordering pages
  * - TODO: LOWPRIO Dryruns & reports
  * - TODO: LOWPRIO Simple UI for making configs
  * - TODO: LOWPRIO Merge layers
@@ -32,8 +33,6 @@ import org.apache.pdfbox.pdmodel.PDDocument;
  * 
  * - BUG: Adobe uses XMP "description" for Subject, and "Subject" for keywords
  */
-
-// TODO: Check whatever fuckery InDesign does with its nestings - multiple titles?
 
 public class App {
 
@@ -48,7 +47,7 @@ public class App {
     }
 
     // Load config
-    Path configFile = Paths.get(configFilename);
+    Path configFile = Path.of(configFilename);
 
     if (!configFile.toFile().exists()) {
       System.out.println("Config file '" + configFile + "' does not exist. Exiting");

@@ -21,7 +21,7 @@ public class ActionBlankPageInsert extends Configuration.Action {
 
   @Override
   public String GetName() {
-    return "Inserting new blank page before p." + (pageTarget + 1) + ".";
+    return "Inserting new blank page before p." + (pageTarget + 1);
   }
 
 }

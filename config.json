@@ -17,7 +17,7 @@
     },
     {
       "action": "removeLayers",
-      "layerNames": []
+      "layerNames": ["Grid"]
     },
     {
       "action": "deletePage",
@@ -32,10 +32,10 @@
       "beforePage": 1
     },
     {
-      "action": "insertPages",
+      "action": "insertPagesFrom",
       "beforePage": 1,
       "sourceFile": "Omslag_separerade.pdf",
-      "sourcePageRange": "1"
+      "sourcePage": 1
     },
     {
       "action": "renameLayerLabel",

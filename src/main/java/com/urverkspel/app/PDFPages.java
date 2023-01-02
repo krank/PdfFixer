@@ -97,4 +97,10 @@ public class PDFPages {
     // STUB
   }
 
+  public static List<PDPage> getPagesFromDocument(String rangeString) {
+
+    // STUB
+    return null;
+  }
+
 }

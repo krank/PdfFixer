@@ -1,5 +1,5 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$schema": "https://json-schema.org/draft-07/schema",
   "type": "object",
   "properties": {
     "configName": {
@@ -128,10 +128,10 @@
             ]
           },
           {
-            "additionalProperties": false,
+            "unevaluatedProperties": false,
             "properties": {
               "action": {
-                "const": "insertPages"
+                "const": "insertPagesFrom"
               },
               "beforePage": {
                 "description": "Where in the PDF to add the new pages",
@@ -142,17 +142,43 @@
                 "description": "The PDF to get pages from",
                 "type": "string",
                 "minLength": 4
-              },
-              "sourcePageRange": {
-                "description": "The page range to get",
-                "type": "string",
-                "minLength": 1
               }
             },
             "required": [
               "beforePage",
-              "sourceFile",
-              "sourcePageRange"
+              "sourceFile"
+            ],
+            "oneOf": [
+              {
+                "properties": {
+                  "sourcePage": {
+                    "description": "The page number to get from sourceFile (1-based)",
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "required": [
+                  "sourcePage"
+                ]
+              },
+              {
+                "properties": {
+                  "sourcePageFirst": {
+                    "description": "The first page to get from sourceFile (1-based)",
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "sourcePageLast": {
+                    "description": "The last page to get from sourceFile (1-based)",
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "required": [
+                  "sourcePageFirst",
+                  "sourcePageLast"
+                ]
+              }
             ]
           },
           {
@@ -170,7 +196,9 @@
                 "type": "string"
               }
             },
-            "required":["from"]
+            "required": [
+              "from"
+            ]
           }
         ]
       }
