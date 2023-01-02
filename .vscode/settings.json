@@ -1,5 +1,5 @@
 {
   "explorer.compactFolders": true,
   "java.configuration.updateBuildConfiguration": "interactive",
-  "java.debug.settings.console":"externalTerminal",
+  "java.debug.settings.console": "externalTerminal"
 }

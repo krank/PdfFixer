@@ -12,6 +12,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.diogonunes.jcolor.Attribute;
+import static com.diogonunes.jcolor.Ansi.colorize;
+
 public class Configuration {
 
   private String name;
@@ -22,58 +25,70 @@ public class Configuration {
 
   public Configuration(Path jsonConfigFile) throws IOException {
 
+    // Read the config file
     String configJson = Files.readString(jsonConfigFile);
-
     JSONObject configObject = new JSONObject(configJson);
 
+    // Get the config contents
     name = GetStringIfKeyExists("configName", configObject);
     inputFileName = GetStringIfKeyExists("inputFileName", configObject);
     outputFileName = GetStringIfKeyExists("outputFileName", configObject);
 
-    // Actions
-
+    // Check for actions
     if (configObject.has("actions")) {
-
       JSONArray actionsArray = configObject.getJSONArray("actions");
 
       for (int i = 0; i < actionsArray.length(); i++) {
         Object potentialAction = actionsArray.get(i);
 
-        if (potentialAction instanceof JSONObject && ((JSONObject) potentialAction).has("action")) {
-
-          JSONObject actionConfig = (JSONObject) potentialAction;
-          String actionName = actionConfig.getString("action");
-
-          Action newAction = null;
-
-          if (actionName.equals("setMetadata")) {
-            newAction = new ActionMetadata();
-          } else if (actionName.equals("removeLayers")) {
-            newAction = new ActionLayerRemoval();
-          } else if (actionName.equals("addBlankPage")) {
-            newAction = new ActionBlankPageInsert();
-          } else if (actionName.equals("deletePage")) {
-            newAction = new ActionPageDelete();
-          } else if (actionName.equals("renameLayerLabel")) {
-            newAction = new ActionLabelRename();
-          } else {
-            continue;
-          }
-
-          newAction.Load(actionConfig);
-          actions.add(newAction);
-
-        }
+        handlePotentialAction(potentialAction);
       }
     }
+  }
 
+  private void handlePotentialAction(Object potentialActionConfig) {
+
+    if (potentialActionConfig instanceof JSONObject && ((JSONObject) potentialActionConfig).has("action")) {
+
+      // Convert the action config object to a JSONObject & read its action name
+      JSONObject actionConfig = (JSONObject) potentialActionConfig;
+      String actionName = actionConfig.getString("action");
+
+      
+      // Create the action based on the action name
+      Action newAction = null;
+
+      if (actionName.equals("setMetadata")) {
+        newAction = new ActionMetadata();
+      } else if (actionName.equals("removeLayers")) {
+        newAction = new ActionLayerRemoval();
+      } else if (actionName.equals("addBlankPage")) {
+        newAction = new ActionBlankPageInsert();
+      } else if (actionName.equals("deletePage")) {
+        newAction = new ActionPageDelete();
+      } else if (actionName.equals("renameLayerLabel")) {
+        newAction = new ActionLabelRename();
+      } else if (actionName.equals("insertFrom")) {
+        newAction = new ActionPageInsertFrom();
+      } else {
+        return;
+      }
+
+      newAction.Load(actionConfig);
+      actions.add(newAction);
+    }
   }
 
   public void ApplyActionsTo(PDDocument document) throws Exception {
     for (Action action : actions) {
-      System.out.print(" * " + action.GetName() + " ...");
-      action.ApplyTo(document);
-      System.out.println(" done.");
+      try {
+        System.out.print(" * " + action.GetName() + " ...");
+        action.ApplyTo(document);
+        System.out.println(colorize(" done", Attribute.GREEN_TEXT()));
+      } catch (Exception ex) {
+        System.out.println(colorize(" error", Attribute.BRIGHT_RED_TEXT()));
+        System.out.println("    " + ex.getMessage() + "\n");
+      }
     }
   }
 

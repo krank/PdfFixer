@@ -10,6 +10,17 @@ import org.apache.pdfbox.pdmodel.PDPage;
 
 public class PDFPages {
 
+  public static int getBoundedPageNumber(PDDocument document, int pageNum) {
+    int maxPageNum = document.getNumberOfPages();
+    if (pageNum < 0) {
+      return 0;
+    } else if (pageNum >= maxPageNum) {
+      return maxPageNum - 1;
+    } else {
+      return pageNum;
+    }
+  }
+
   public static void analyzePage(PDDocument document, int pageNum) throws Exception {
 
     PDPage page = document.getPage(pageNum);
@@ -67,34 +78,28 @@ public class PDFPages {
     newPage.setCropBox(prototype.getCropBox());
 
     // Insert new page
+    InsertPageAt(document, pageNum, newPage);
+
+  }
+
+  public static void InsertPageAt(PDDocument document, int pageNum, PDPage page) {
     PDPage currentPageAtLocation = getPageFromDocument(document, pageNum);
 
     if (document.getNumberOfPages() == 0) {
-      document.addPage(newPage);
+      document.addPage(page);
     } else if (pageNum < document.getNumberOfPages()) {
-      document.getPages().insertBefore(newPage, currentPageAtLocation);
+      document.getPages().insertBefore(page, currentPageAtLocation);
     } else {
-      document.getPages().insertAfter(newPage, currentPageAtLocation);
+      document.getPages().insertAfter(page, currentPageAtLocation);
     }
-
   }
 
   public static PDPage getPageFromDocument(PDDocument document, int pageNum) {
 
     // If page number is out of bounds, use first or last page
-    if (pageNum < 0) {
-      pageNum = 0;
-    } else if (pageNum >= document.getNumberOfPages()) {
-      pageNum = document.getNumberOfPages() - 1;
-    }
+    pageNum = getBoundedPageNumber(document, pageNum);
 
     return document.getPage(pageNum);
-
-  }
-
-  public static void insertPageFrom(PDDocument targetDocument, int targetPageNum, PDDocument sourceDocument,
-      int sourcePageNum) {
-    // STUB
   }
 
   public static List<PDPage> getPagesFromDocument(String rangeString) {

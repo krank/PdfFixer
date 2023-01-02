@@ -20,7 +20,7 @@
         "type": "object",
         "properties": {
           "action": {
-            "description": "The action to be taken"
+            "type":"string"
           }
         },
         "required": [
@@ -31,6 +31,7 @@
             "additionalProperties": false,
             "properties": {
               "action": {
+                "description": "Change metadata. Allowed properties: title, author, description, keywords",
                 "const": "setMetadata"
               },
               "title": {
@@ -81,6 +82,7 @@
             "additionalProperties": false,
             "properties": {
               "action": {
+                "description": "Remove named layers & all their contents from all pages",
                 "const": "removeLayers"
               },
               "layerNames": {
@@ -100,6 +102,7 @@
             "additionalProperties": false,
             "properties": {
               "action": {
+                "description": "Delete a specific page (1-based).",
                 "const": "deletePage"
               },
               "pageNumber": {
@@ -116,6 +119,7 @@
             "additionalProperties": false,
             "properties": {
               "action": {
+                "description": "Adds a new blank page before a specified page (1-based)",
                 "const": "addBlankPage"
               },
               "beforePage": {
@@ -131,7 +135,8 @@
             "unevaluatedProperties": false,
             "properties": {
               "action": {
-                "const": "insertPagesFrom"
+                "description": "Copy one or more pages from another PDF and insert them before a specified page (1-based). Use either sourcePage or sourcePageFirst/sourcePageLast",
+                "const": "insertFrom"
               },
               "beforePage": {
                 "description": "Where in the PDF to add the new pages",
@@ -185,6 +190,7 @@
             "additionalProperties": false,
             "properties": {
               "action": {
+                "description": "Rename a layer label. If no 'from' is specified, will rename first label found, if any",
                 "const": "renameLayerLabel"
               },
               "from": {

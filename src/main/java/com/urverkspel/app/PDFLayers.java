@@ -61,7 +61,6 @@ public class PDFLayers {
     }
   }
 
-
   public static void removeLayersFromDocumentCatalog(PDDocumentCatalog catalog, List<String> layersToRemove) {
 
     PDOptionalContentProperties props = catalog.getOCProperties();
