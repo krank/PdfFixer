@@ -78,11 +78,11 @@ public class PDFPages {
     newPage.setCropBox(prototype.getCropBox());
 
     // Insert new page
-    InsertPageAt(document, pageNum, newPage);
+    insertPageAt(document, pageNum, newPage);
 
   }
 
-  public static void InsertPageAt(PDDocument document, int pageNum, PDPage page) {
+  public static void insertPageAt(PDDocument document, int pageNum, PDPage page) {
     PDPage currentPageAtLocation = getPageFromDocument(document, pageNum);
 
     if (document.getNumberOfPages() == 0) {

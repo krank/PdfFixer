@@ -23,7 +23,7 @@ public class ActionLayerRemoval extends Configuration.Action {
     if (layersToRemove.size() == 0)
       return;
 
-    ProgressBar progressBar = new ProgressBar(40, 0, document.getNumberOfPages() - 1, 5);
+    ProgressBar progressBar = new ProgressBar(40, 0, document.getNumberOfPages() - 1, Configuration.subReportIndent);
     System.out.println();
 
     // Remove contents from all pages

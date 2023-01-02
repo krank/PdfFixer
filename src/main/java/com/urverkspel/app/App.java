@@ -3,7 +3,10 @@ package com.urverkspel.app;
 import java.nio.file.Path;
 
 import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.multipdf.PDFMergerUtility;
+
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 
 /* PLANS:
  * x TODO: Modular design
@@ -74,8 +77,10 @@ public class App {
     configuration.ApplyActionsTo(document);
 
     // Save resulting file
-    System.out.println("Saving file to [" + configuration.GetOutputFileName() + "]");
-    document.save(configuration.GetOutputFileName());
+    Path outputFile = configuration.GetOutputFile();
+    System.out.println("Saving file to [" + outputFile + "]");
+    document.save(outputFile.toFile());
+
     document.close();
   }
 }

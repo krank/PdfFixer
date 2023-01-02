@@ -5,6 +5,12 @@
   "outputFileName": "test_output.pdf",
   "actions": [
     {
+      "action": "insertFrom",
+      "beforePage": 1,
+      "sourceFile": "Omslag_separerade.pdf",
+      "sourcePage": 2
+    },
+    {
       "action": "setMetadata",
       "title": "Alla kungens hästar, alla kungens män",
       "author": "Mikael Bergström",
@@ -25,18 +31,9 @@
     },
     {
       "action": "addBlankPage",
-      "beforePage": 2000
-    },
-    {
-      "action": "addBlankPage",
       "beforePage": 1
     },
-    {
-      "action": "insertFrom",
-      "beforePage": 1,
-      "sourceFile": "Omslag_separerade.pdf",
-      "sourcePage": 1
-    },
+
     {
       "action": "renameLayerLabel",
       "from": "Alla kungens hästar, alla kungens män.indb",

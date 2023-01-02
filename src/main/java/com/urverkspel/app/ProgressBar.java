@@ -6,14 +6,14 @@ public class ProgressBar {
   int minValue = 0;
   int maxValue = 0;
   int value = 0;
-  int indent = 0;
+  String prefix = "";
 
-  public ProgressBar(int width, int minValue, int maxValue, int indent) {
+  public ProgressBar(int width, int minValue, int maxValue, String prefix) {
     this.minValue = minValue;
     this.maxValue = maxValue;
     this.width = width;
     this.value = minValue;
-    this.indent = indent;
+    this.prefix = prefix;
   }
 
   public void Print(Boolean includePercent, Boolean includeNumbers) {
@@ -32,7 +32,7 @@ public class ProgressBar {
     String numbersString = includeNumbers ? value + "/" + maxValue : "";
     
     // Print the bar
-    System.out.print("\r" + " ".repeat(indent) + "[" + bar + "]" + percentString + " (" + numbersString + ")");
+    System.out.print("\r" + prefix + "[" + bar + "]" + percentString + " (" + numbersString + ")");
   }
 
   public void SetValue(int value) {

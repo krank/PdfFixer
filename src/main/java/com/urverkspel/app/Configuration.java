@@ -21,6 +21,8 @@ public class Configuration {
   private String inputFileName;
   private String outputFileName;
 
+  public static String subReportIndent = "    ";
+
   private ArrayList<Action> actions = new ArrayList<Action>();
 
   public Configuration(Path jsonConfigFile) throws IOException {
@@ -87,7 +89,7 @@ public class Configuration {
         System.out.println(colorize(" done", Attribute.GREEN_TEXT()));
       } catch (Exception ex) {
         System.out.println(colorize(" error", Attribute.BRIGHT_RED_TEXT()));
-        System.out.println("    " + ex.getMessage() + "\n");
+        System.out.println(subReportIndent + ex.getMessage() + "\n");
       }
     }
   }
@@ -173,12 +175,16 @@ public class Configuration {
     return Paths.get(inputFileName);
   }
 
-  public String GetOutputFileName() {
-    return outputFileName;
+  public Path GetOutputFile() {
+    return Paths.get(outputFileName);
   }
 
   public String getName() {
     return name;
+  }
+
+  public static void writeSubReport(String message) {
+    System.out.println(subReportIndent + message);
   }
 
   public static abstract class Action {
