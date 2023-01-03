@@ -3,10 +3,7 @@ package com.urverkspel.app;
 import java.nio.file.Path;
 
 import org.apache.pdfbox.Loader;
-import org.apache.pdfbox.multipdf.PDFMergerUtility;
-
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
 
 /* PLANS:
  * x TODO: Modular design

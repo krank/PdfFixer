@@ -2,9 +2,10 @@ package com.urverkspel.app;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.pdfbox.Loader;
-import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -38,75 +39,30 @@ public class ActionPageInsertFrom extends Configuration.Action {
       throw new Exception("Source file " + sourceFile.getFileName() + " does not exist");
     }
 
-    if (targetPageNum < 0) {
-      throw new Exception("Target page number is not set");
+    PDDocument sourceDocument = Loader.loadPDF(sourceFile.toFile());
+
+    List<PDPage> sourcePages = new ArrayList<>();
+
+    int numberOfPages = sourceDocument.getNumberOfPages();
+
+    // TODO: Remove unwanted pages from source file
+
+    // Merge the source file into the target file
+    PDFMergerUtility merger = new PDFMergerUtility();
+    merger.appendDocument(document, sourceDocument);
+    sourceDocument.close();
+
+    // Create a list of all pages we just got from the source file
+    for (int i = 0; i < numberOfPages; i++) {
+      int pNum = document.getNumberOfPages() - numberOfPages + i;
+      System.out.println("Adding page " + pNum);
+      sourcePages.add(PDFPages.getPageFromDocument(document, pNum));
     }
 
-    // Merge the source file into the target file (1)
+    // Move pages to targetPage location
 
-    // Remove unwanted pages from target file (3)
+    PDFPages.insertPagesAt(sourceDocument, targetPageNum, sourcePages, true);
 
-    // Move remaining pages to targetPage location (2)
-
-
-
-    // Path firstFile = Path.of("kungen.pdf");
-    // Path secondFile = Path.of("Omslag_separerade.pdf");
-    // PDDocument firstDocument = Loader.loadPDF(firstFile.toFile());
-    // PDDocument secondDocument = Loader.loadPDF(secondFile.toFile());
-
-    // PDFMergerUtility merger = new PDFMergerUtility();
-
-    // merger.appendDocument(firstDocument, secondDocument);
-    
-    // PDPage p = PDFPages.getPageFromDocument(firstDocument, firstDocument.getNumberOfPages() - 2);
-    
-    // firstDocument.removePage(p);
-
-    // PDFPages.insertPageAt(firstDocument, 0, p);
-    
-    // firstDocument.save("test.pdf");
-    // firstDocument.close();
-    // secondDocument.close();
-
-    // Read page(s) from the source file
-    // PDDocument sourceDocument = Loader.loadPDF(sourceFile.toFile());
-    // if (sourcePageNum >= 0) {
-
-
-
-
-      // Configuration.writeSubReport("bajs");
-
-      // // Single page
-      // sourcePageNum = PDFPages.getBoundedPageNumber(sourceDocument, sourcePageNum);
-
-      // PDPage sourcePage = PDFPages.getPageFromDocument(sourceDocument, sourcePageNum);
-
-      // document.importPage(sourcePage);
-
-      // document.addPage(newPage);
-      // pageDictionary.setItem("Parent", document.getDocumentCatalog().getCOSObject());
-
-      // PDFPages.insertPageAt(document, 7, newPage);
-
-      // PDFMergerUtility merger = new PDFMergerUtility();
-      
-
-    // }
-
-    // if (sourcePageNumFirst >= 0 && sourcePageNumLast >= 0) {
-
-    //   // Range of pages
-    //   sourcePageNumFirst = PDFPages.getBoundedPageNumber(sourceDocument, sourcePageNumFirst);
-    //   sourcePageNumLast = PDFPages.getBoundedPageNumber(sourceDocument, sourcePageNumLast);
-
-    //   for (int i = sourcePageNumLast; i >= sourcePageNumFirst; i--) {
-    //     PDPage sourcePage = PDFPages.getPageFromDocument(sourceDocument, i);
-    //     PDFPages.InsertPageAt(document, targetPageNum, sourcePage);
-    //   }
-
-    // }
   }
 
   @Override

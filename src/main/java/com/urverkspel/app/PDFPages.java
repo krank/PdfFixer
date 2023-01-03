@@ -78,19 +78,38 @@ public class PDFPages {
     newPage.setCropBox(prototype.getCropBox());
 
     // Insert new page
-    insertPageAt(document, pageNum, newPage);
+    insertPageAt(document, pageNum, newPage, false);
 
   }
 
-  public static void insertPageAt(PDDocument document, int pageNum, PDPage page) {
+  public static void insertPageAt(PDDocument document, int pageNum, PDPage page, boolean removePageFromDocumentFirst) {
+
+    insertPagesAt(document, pageNum, List.of(page), removePageFromDocumentFirst);
+
+  }
+
+  
+  public static void insertPagesAt(PDDocument document, int pageNum, List<PDPage> pages, boolean removePagesFromDocumentFirst) {
+
     PDPage currentPageAtLocation = getPageFromDocument(document, pageNum);
 
-    if (document.getNumberOfPages() == 0) {
-      document.addPage(page);
-    } else if (pageNum < document.getNumberOfPages()) {
-      document.getPages().insertBefore(page, currentPageAtLocation);
-    } else {
-      document.getPages().insertAfter(page, currentPageAtLocation);
+    for (PDPage page : pages) {
+
+      // In case page is already in document, remove it
+      if (removePagesFromDocumentFirst)
+      {
+        document.removePage(page);
+      }
+
+      if (document.getNumberOfPages() == 0) { // If document is empty, add pages
+        document.addPage(page);
+        
+      } else if (pageNum < document.getNumberOfPages()) { // If page number is in bounds, insert pages
+        document.getPages().insertBefore(page, currentPageAtLocation);
+        
+      } else { // If page number is out of bounds, insert pages at end
+        document.getPages().insertAfter(page, currentPageAtLocation);
+      }
     }
   }
 
