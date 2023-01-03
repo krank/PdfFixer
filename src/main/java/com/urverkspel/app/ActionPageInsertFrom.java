@@ -18,14 +18,19 @@ public class ActionPageInsertFrom extends Configuration.Action {
   int targetPageNum = -1;
   RangeCollection sourcePageRanges = null;
 
+  public ActionPageInsertFrom(Configuration config) {
+    super(config);
+  }
+
   @Override
   public void Load(JSONObject configFragment) {
 
     String sourceFileName = Configuration.GetStringIfKeyExists("sourceFile", configFragment);
-    sourceFile = Path.of(sourceFileName);
 
-    sourcePageNum = Configuration.GetIntegerIfKeyExists("sourcePage", configFragment) - 1;
-    targetPageNum = Configuration.GetIntegerIfKeyExists("beforePage", configFragment) - 1;
+    sourceFile = config.GetConfigRelativePath(sourceFileName);
+
+    sourcePageNum = Configuration.GetIntIfKeyExists("sourcePage", configFragment) - 1;
+    targetPageNum = Configuration.GetIntIfKeyExists("beforePage", configFragment) - 1;
 
     String sourcePagesString = Configuration.GetStringIfKeyExists("sourcePageRange", configFragment);
 
@@ -49,20 +54,27 @@ public class ActionPageInsertFrom extends Configuration.Action {
     }
 
     // Remove unwanted pages from source file
-    if (sourcePageNum > 0 || sourcePageRanges != null) {
-      
+    if (sourcePageNum >= 0 || sourcePageRanges != null) {
+
+      // System.out.println("hey");
+
       // Add pages to remove to a list so we don't mess up the loop
       List<PDPage> pagesToRemove = new ArrayList<>();
       for (int i = 0; i < sourceDocument.getNumberOfPages(); i++) {
-        PDPage page = sourceDocument.getPages().get(i);
-        
+
         // Remember: i is 0-based, but page number ranges are 1-based
-        if (i != sourcePageNum && (sourcePageRanges == null || !sourcePageRanges.contains(i + 1))) {
-          pagesToRemove.add(page);
+        if (i == sourcePageNum) {
+          continue;
         }
-        
+        if (sourcePageRanges != null && sourcePageRanges.contains(i + 1)) {
+          continue;
+        }
+
+        PDPage page = sourceDocument.getPages().get(i);
+
+        pagesToRemove.add(page);
       }
-      
+
       // Remove pages from source file
       for (PDPage page : pagesToRemove) {
         sourceDocument.removePage(page);
@@ -93,13 +105,11 @@ public class ActionPageInsertFrom extends Configuration.Action {
   public String GetName() {
     if (sourcePageRanges != null) {
       return "Inserting pages " + sourcePageRanges.toString() + " from " + sourceFile.getFileName() + " to page "
-          + targetPageNum;
-    }
-    else if (sourcePageNum >= 0) {
+          + (targetPageNum + 1);
+    } else if (sourcePageNum >= 0) {
       return "Inserting page " + (sourcePageNum + 1) + " from " + sourceFile.getFileName() + " to page "
-          + targetPageNum;
-    }
-    else {
+          + (targetPageNum + 1);
+    } else {
       return "Inserting pages from " + sourceFile.getFileName() + " to page " + targetPageNum;
     }
   }

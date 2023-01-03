@@ -1,0 +1,48 @@
+{
+  "$schema": "config.schema.json",
+  "configName": "Dummy config",
+  "inputFileName": "original.pdf",
+  "outputFileName": "destination.pdf",
+  "actions": [
+    {
+      "action": "setMetadata",
+      "title": "The new title",
+      "author": "Name McLastname",
+      "description": "A very good book",
+      "keywords": [
+        "book",
+        "content",
+        "java"
+      ]
+    },
+    {
+      "action": "removeLayers",
+      "layerNames": ["Layer1"]
+    },
+    {
+      "action": "deletePage",
+      "pageNumber": 1
+    },
+    {
+      "action": "addBlankPage",
+      "beforePage": 1
+    },
+    {
+      "action": "insertFrom",
+      "beforePage": 1,
+      "sourceFile": "OtherFile.pdf",
+      "sourcePage": 1
+    },
+    {
+      "action":"insertFrom",
+      "beforePage": 4,
+      "sourceFile": "OtherOtherFile.pdf",
+      "sourcePageRange": "78,42-45,4-2"
+    },
+    {
+      "action": "renameLayerLabel",
+      "from": "SomeBadName.indb",
+      "to": "First layer group"
+    }
+  ]
+}

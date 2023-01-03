@@ -195,10 +195,15 @@
               "to": {
                 "description": "New name",
                 "type": "string"
+              },
+              "maxTimes": {
+                "description": "The max number of labels to rename",
+                "type": "integer"
               }
             },
             "required": [
-              "from"
+              "from",
+              "to"
             ]
           }
         ]

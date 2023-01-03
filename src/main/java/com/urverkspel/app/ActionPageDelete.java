@@ -4,12 +4,16 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.json.JSONObject;
 
 public class ActionPageDelete extends Configuration.Action {
+  
+    int pageTarget = 0;
 
-  int pageTarget = 0;
+  public ActionPageDelete(Configuration config) {
+    super(config);
+  }
 
   @Override
   public void Load(JSONObject configFragment) {
-    pageTarget = Configuration.GetIntegerIfKeyExists("pageNumber", configFragment) - 1;
+    pageTarget = Configuration.GetIntIfKeyExists("pageNumber", configFragment) - 1;
   }
 
   @Override

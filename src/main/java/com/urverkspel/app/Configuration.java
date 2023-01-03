@@ -1,6 +1,5 @@
 package com.urverkspel.app;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -21,11 +20,15 @@ public class Configuration {
   private String inputFileName;
   private String outputFileName;
 
+  private Path configPath;
+
   public static String subReportIndent = "    ";
 
   private ArrayList<Action> actions = new ArrayList<Action>();
 
   public Configuration(Path jsonConfigFile) throws Exception {
+
+    configPath = jsonConfigFile.toAbsolutePath().getParent();
 
     // Read the config file
     String configJson = Files.readString(jsonConfigFile);
@@ -46,6 +49,11 @@ public class Configuration {
         handlePotentialAction(potentialAction);
       }
     }
+
+    if (!sanityCheck()) {
+      throw new Exception("Configuration sanity check failed");
+    }
+
   }
 
   private void handlePotentialAction(Object potentialActionConfig) {
@@ -56,22 +64,21 @@ public class Configuration {
       JSONObject actionConfig = (JSONObject) potentialActionConfig;
       String actionName = actionConfig.getString("action");
 
-      
       // Create the action based on the action name
       Action newAction = null;
 
       if (actionName.equals("setMetadata")) {
-        newAction = new ActionMetadata();
+        newAction = new ActionMetadata(this);
       } else if (actionName.equals("removeLayers")) {
-        newAction = new ActionLayerRemoval();
+        newAction = new ActionLayerRemoval(this);
       } else if (actionName.equals("addBlankPage")) {
-        newAction = new ActionBlankPageInsert();
+        newAction = new ActionBlankPageInsert(this);
       } else if (actionName.equals("deletePage")) {
-        newAction = new ActionPageDelete();
+        newAction = new ActionPageDelete(this);
       } else if (actionName.equals("renameLayerLabel")) {
-        newAction = new ActionLabelRename();
+        newAction = new ActionLabelRename(this);
       } else if (actionName.equals("insertFrom")) {
-        newAction = new ActionPageInsertFrom();
+        newAction = new ActionPageInsertFrom(this);
       } else {
         return;
       }
@@ -100,8 +107,8 @@ public class Configuration {
 
     // Check input & output file validity
     try {
-      outputFile = Paths.get(outputFileName);
-      inputFile = Paths.get(inputFileName);
+      outputFile = Paths.get(configPath.toString(), outputFileName);
+      inputFile = Paths.get(configPath.toString(), inputFileName);
     } catch (InvalidPathException ex) {
       if (outputFile == null)
         System.out.println("Output file not valid");
@@ -144,7 +151,7 @@ public class Configuration {
     }
   }
 
-  public static Integer GetIntegerIfKeyExists(String key, JSONObject object) {
+  public static Integer GetIntIfKeyExists(String key, JSONObject object) {
     try {
       return object.getInt(key);
     } catch (JSONException e) {
@@ -170,24 +177,38 @@ public class Configuration {
 
     return stringArray;
   }
+  
+  public static void writeSubReport(String message) {
+    System.out.println(subReportIndent + message);
+  }
+
+  public Path GetConfigPath() {
+    return configPath;
+  }
+
+  public Path GetConfigRelativePath(String path) {
+    return Paths.get(configPath.toString(), path).normalize();
+  }
 
   public Path GetInputFile() {
-    return Paths.get(inputFileName);
+    return Paths.get(configPath.toString(), inputFileName);
   }
 
   public Path GetOutputFile() {
-    return Paths.get(outputFileName);
+    return Paths.get(configPath.toString(), outputFileName);
   }
 
   public String getName() {
     return name;
   }
 
-  public static void writeSubReport(String message) {
-    System.out.println(subReportIndent + message);
-  }
-
   public static abstract class Action {
+
+    protected Configuration config;
+
+    public Action(Configuration config) {
+      this.config = config;
+    }
 
     public abstract void Load(JSONObject configFragment);
 

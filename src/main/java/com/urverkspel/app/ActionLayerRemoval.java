@@ -11,6 +11,10 @@ import org.json.JSONObject;
 public class ActionLayerRemoval extends Configuration.Action {
 
   List<String> layersToRemove;
+  
+  public ActionLayerRemoval(Configuration config) {
+    super(config);
+  }
 
   @Override
   public void Load(JSONObject configFragment) {

@@ -6,10 +6,14 @@ import org.json.JSONObject;
 public class ActionBlankPageInsert extends Configuration.Action {
 
   int pageTarget = 0;
+  
+  public ActionBlankPageInsert(Configuration config) {
+    super(config);
+  }
 
   @Override
   public void Load(JSONObject configFragment) {
-    pageTarget = Configuration.GetIntegerIfKeyExists("beforePage", configFragment) - 1;
+    pageTarget = Configuration.GetIntIfKeyExists("beforePage", configFragment) - 1;
   }
 
   @Override

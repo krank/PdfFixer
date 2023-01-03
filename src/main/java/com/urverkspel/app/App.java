@@ -5,31 +5,32 @@ import java.nio.file.Path;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
+import com.diogonunes.jcolor.Attribute;
+import static com.diogonunes.jcolor.Ansi.colorize;
+
 /* PLANS:
- * x TODO: Modular design
- * x TODO: Read config from xml/json
- * x TODO: Remove all items from specified layer, from all pages
- * x TODO: Set metadata
- * x TODO: Insert blank pages, at specific locations (first/last)
- * x TODO: JSON schema
- * x TODO: Delete specific pages
- * x TODO: Rename layer labels
- * x TODO: Make exe
- * - TODO: Use config file's working directory as base for relative paths
- * - TODO: Insert specific pages from one PDF into another, at specified locations (including first/last)
- * 
- * - TODO: LOWPRIO Extract page/s (range) to specified file
- * - TODO: LOWPRIO rename layers
- * - TODO: LOWPRIO reorder layers
- * - TODO: LOWPRIO move layer to below another label
- * - TODO: LOWPRIO create new label
- * - TODO: LOWPRIO delete label
- * - TODO: LOWPRIO moving/reordering pages
- * - TODO: LOWPRIO Dryruns & reports
- * - TODO: LOWPRIO Simple UI for making configs
- * - TODO: LOWPRIO Merge layers
- * 
- * - TODO: Get array of PDPages from document based on range of pages (1-3, 5, 7-10)
+ * x Modular design
+ * x Read config from xml/json
+ * x Remove all items from specified layer, from all pages
+ * x Set metadata
+ * x Insert blank pages, at specific locations (first/last)
+ * x JSON schema
+ * x Delete specific pages
+ * x Rename layer labels
+ * x Make exe
+ * x Insert specific pages from one PDF into another, at specified locations (including first/last)
+ * x Use config file's working directory as base for relative paths
+ * TODO: Fix bug w/ multiple layer order groups
+ * TODO: Rename layers
+
+ * TODO: LOWPRIO Extract page/s (range) to specified file
+ * TODO: LOWPRIO reorder layers
+ * TODO: LOWPRIO move layer to below another label
+ * TODO: LOWPRIO create new label
+ * TODO: LOWPRIO delete label
+ * TODO: LOWPRIO moving/reordering pages
+ * TODO: LOWPRIO Dryruns & reports
+ * TODO: LOWPRIO Simple UI for making configs
  * 
  * - BUG: Adobe uses XMP "description" for Subject, and "Subject" for keywords
  */
@@ -47,41 +48,33 @@ public class App {
       configFilename = args[0];
     }
 
-    // Load config
-    Path configFile = Path.of(configFilename);
-
-
+    // Load config file
     Configuration configuration = null;
     try {
+      Path configFile = Path.of(configFilename);
       configuration = new Configuration(configFile);
-    } catch (Exception ex)
-    {
+    } catch (Exception ex) {
       System.out.println("Failed to load config file: " + ex.getMessage());
       return;
     }
-    
 
-    if (!configuration.sanityCheck()) {
-      System.out.println("Config is not valid. Exiting");
-      return;
-    }
-
-    System.out.println("Following instructions from '" + configuration.getName() + "' [" + configFile + "]");
+    System.out.println("Following instructions from '" + configuration.getName() + "' [" + configFilename + "]");
 
     // Load input document
     Path pdfFile = configuration.GetInputFile();
 
-    System.out.println("Reading [" + pdfFile.toString() + "]");
+    System.out.println("\nReading [" + pdfFile.toString() + "]");
     PDDocument document = Loader.loadPDF(pdfFile.toFile());
 
     // Apply actions to document
-    System.out.println("Applying actions:");
+    System.out.println("\nApplying actions:");
     configuration.ApplyActionsTo(document);
 
     // Save resulting file
     Path outputFile = configuration.GetOutputFile();
-    System.out.println("Saving file to [" + outputFile + "]");
+    System.out.println("\nSaving file to [" + outputFile + "] ... \n");
     document.save(outputFile.toFile());
+    System.out.println(colorize("Done!", Attribute.GREEN_TEXT()));
 
     document.close();
   }

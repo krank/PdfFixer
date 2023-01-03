@@ -95,6 +95,11 @@ public class PDFPages {
 
     for (PDPage page : pages) {
 
+      // If page is already at location, skip it
+      if (page.equals(currentPageAtLocation)) {
+        continue;
+      }
+
       // In case page is already in document, remove it
       if (removePagesFromDocumentFirst)
       {

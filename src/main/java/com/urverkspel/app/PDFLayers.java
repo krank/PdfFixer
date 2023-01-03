@@ -22,7 +22,6 @@ import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentGroup;
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentProperties;
 
-
 public class PDFLayers {
 
   public static void printLayerNames(PDDocument document) {
@@ -34,7 +33,7 @@ public class PDFLayers {
     }
   }
 
-  public static void renameLabel(PDDocument document, String oldName, String newName) {
+  public static void renameLabel(PDDocument document, String oldName, String newName, int maxTimes) {
 
     // Find the D
     COSDictionary d = (COSDictionary) document.getDocumentCatalog().getOCProperties().getCOSObject().getItem("D");
@@ -43,17 +42,49 @@ public class PDFLayers {
     COSObject orderCOS = (COSObject) d.getItem("Order");
     COSArray orderArray = (COSArray) orderCOS.getObject();
 
+    // Iterate through the sub-arrays
+    for (int i = 0; i < orderArray.size(); i++) {
+
+      COSArray orderSubArray = null;
+
+      // Get the sub-array
+      COSBase orderSubCOS = orderArray.get(i);
+      if (orderSubCOS instanceof COSArray) {
+        orderSubArray = (COSArray) orderSubCOS;
+      } else if (orderSubCOS instanceof COSObject) {
+        COSObject intermediaryObject = (COSObject) orderSubCOS.getCOSObject();
+        orderSubArray = (COSArray) intermediaryObject.getObject();
+      } else {
+        continue;
+      }
+
+      // Iterate over the array and find the string we want to replace
+      for (int j = 0; j < orderSubArray.size(); j++) {
+        COSBase orderedItem = orderSubArray.get(j);
+        if (orderedItem instanceof COSString) {
+          COSString labelString = (COSString) orderedItem;
+          if (labelString.getString().equals(oldName) || oldName.isBlank()) {
+            orderSubArray.set(j, new COSString(newName));
+            maxTimes--;
+            break;
+          }
+        }
+      }
+
+      if (maxTimes == 0) {
+        break;
+      }
+    }
+
     COSObject orderSubCOS = (COSObject) orderArray.get(0);
     COSArray orderSubArray = (COSArray) orderSubCOS.getObject();
 
     // Iterate over the array and find the string we want to replace
     for (int i = 0; i < orderSubArray.size(); i++) {
       COSBase orderedItem = orderSubArray.get(i);
-      if (orderedItem instanceof COSString)
-      {
+      if (orderedItem instanceof COSString) {
         COSString labelString = (COSString) orderedItem;
-        if (labelString.getString().equals(oldName) || oldName.isBlank())
-        {
+        if (labelString.getString().equals(oldName) || oldName.isBlank()) {
           orderSubArray.set(i, new COSString(newName));
           break;
         }

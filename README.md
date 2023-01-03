@@ -9,8 +9,11 @@ The plan is for this to evolve into a simple commandline tool for manipulating P
 * Removing PDF layers including contents
 * Edit metadata (Title, Author, Description & Keywords), both XMP & classic
 * Modifying layer label names
-
-### Planned functionality
 * Insert pages from other PDFs
-* Maybe: Dryruns & reports
-* Maybe: Extract pages to new PDF
+
+### Potential future functionality
+* Move pages
+* Rename layers
+* Reorder layers
+* Dryruns & reports
+* Extract pages to new PDF

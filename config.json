@@ -1,5 +1,5 @@
 {
-  "$schema": "./config.schema.json",
+  "$schema": "config.schema.json",
   "configName": "Dummy config",
   "inputFileName": "kungen.pdf",
   "outputFileName": "test_output.pdf",
@@ -17,11 +17,11 @@
     },
     {
       "action": "removeLayers",
-      "layerNames": []
-    },
-    {
-      "action": "deletePage",
-      "pageNumber": 1
+      "layerNames": [
+        "Grid",
+        "Göm på PDF",
+        "Guides and Grids"
+      ]
     },
     {
       "action": "addBlankPage",
@@ -34,15 +34,27 @@
       "sourcePage": 1
     },
     {
-      "action":"insertFrom",
-      "beforePage": 4,
-      "sourceFile": "Kungen.pdf",
-      "sourcePageRange": "78,42-45,4-2"
+      "action": "insertFrom",
+      "beforePage": 1000,
+      "sourceFile": "Omslag_separerade.pdf",
+      "sourcePage": 2
     },
     {
       "action": "renameLayerLabel",
       "from": "Alla kungens hästar, alla kungens män.indb",
       "to": "Alla Kungens Hästar"
+    },
+    {
+      "action": "renameLayerLabel",
+      "from": "Omslag-separerade.indd",
+      "to": "Framsida",
+      "maxTimes": 1
+    },
+    {
+      "action": "renameLayerLabel",
+      "from": "Omslag-separerade.indd",
+      "to": "Baksida",
+      "maxTimes": 1
     }
   ]
 }

@@ -16,6 +16,10 @@ public class ActionMetadata extends Configuration.Action {
   String author;
   String description;
   String[] keywords;
+  
+  public ActionMetadata(Configuration config) {
+    super(config);
+  }
 
   @Override
   public void Load(JSONObject configFragment) {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class RangeCollection {
 
@@ -72,6 +73,16 @@ public class RangeCollection {
       }
     }
     return false;
+  }
+
+  @Override
+  public String toString() {
+
+    String r = ranges.stream()
+        .map(Range::toString)
+        .collect(Collectors.joining(","));
+
+    return r;
   }
 
   private class Range {
