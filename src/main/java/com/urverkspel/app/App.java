@@ -40,6 +40,7 @@ public class App {
 
     System.out.println("--- PDF Fixer ---");
 
+    // Decide on config file to load
     String configFilename = "config.json";
 
     if (args.length > 0) {
@@ -49,12 +50,16 @@ public class App {
     // Load config
     Path configFile = Path.of(configFilename);
 
-    if (!configFile.toFile().exists()) {
-      System.out.println("Config file '" + configFile + "' does not exist. Exiting");
+
+    Configuration configuration = null;
+    try {
+      configuration = new Configuration(configFile);
+    } catch (Exception ex)
+    {
+      System.out.println("Failed to load config file: " + ex.getMessage());
       return;
     }
-
-    Configuration configuration = new Configuration(configFile);
+    
 
     if (!configuration.sanityCheck()) {
       System.out.println("Config is not valid. Exiting");

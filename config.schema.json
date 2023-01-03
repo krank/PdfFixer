@@ -20,7 +20,7 @@
         "type": "object",
         "properties": {
           "action": {
-            "type":"string"
+            "type": "string"
           }
         },
         "required": [
@@ -147,44 +147,39 @@
                 "description": "The PDF to get pages from",
                 "type": "string",
                 "minLength": 4
+              },
+              "sourcePage": {
+                "description": "The page number to get from sourceFile (1-based)",
+                "type": "integer",
+                "minimum": 1
+              },
+              "sourcePageRange": {
+                "description": "The pages to get from sourceFile (1-based)",
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[0-9]+(?:-[0-9]+)?(?:,[0-9]+(?:-[0-9]+)?)*$"
               }
             },
             "required": [
               "beforePage",
               "sourceFile"
             ],
-            "oneOf": [
-              {
-                "properties": {
-                  "sourcePage": {
-                    "description": "The page number to get from sourceFile (1-based)",
-                    "type": "integer",
-                    "minimum": 1
-                  }
-                },
-                "required": [
-                  "sourcePage"
-                ]
+            "dependencies": {
+              "sourcePage": {
+                "not": {
+                  "required": [
+                    "sourcePageRange"
+                  ]
+                }
               },
-              {
-                "properties": {
-                  "sourcePageFirst": {
-                    "description": "The first page to get from sourceFile (1-based)",
-                    "type": "integer",
-                    "minimum": 1
-                  },
-                  "sourcePageLast": {
-                    "description": "The last page to get from sourceFile (1-based)",
-                    "type": "integer",
-                    "minimum": 1
-                  }
-                },
-                "required": [
-                  "sourcePageFirst",
-                  "sourcePageLast"
-                ]
+              "sourcePageRange": {
+                "not": {
+                  "required": [
+                    "sourcePage"
+                  ]
+                }
               }
-            ]
+            }
           },
           {
             "additionalProperties": false,

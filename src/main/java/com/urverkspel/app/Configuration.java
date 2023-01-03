@@ -25,7 +25,7 @@ public class Configuration {
 
   private ArrayList<Action> actions = new ArrayList<Action>();
 
-  public Configuration(Path jsonConfigFile) throws IOException {
+  public Configuration(Path jsonConfigFile) throws Exception {
 
     // Read the config file
     String configJson = Files.readString(jsonConfigFile);
