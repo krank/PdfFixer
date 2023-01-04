@@ -23,7 +23,7 @@ import static com.diogonunes.jcolor.Ansi.colorize;
  * x BUG: Fix bug w/ multiple layer order groups
  * x BUG: Fix bug w/ multiple layers with the same name?
  * x: Rename layers
- * TODO: Enable/disable layer
+ * x Enable/disable layer
  * TODO: enable use of regex for layer & label names
  * TODO: Rename layers under a specific label
  * TODO: Extract page/s (range) to specified file
