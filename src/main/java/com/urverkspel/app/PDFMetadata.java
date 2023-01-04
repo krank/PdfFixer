@@ -3,6 +3,7 @@ package com.urverkspel.app;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
@@ -32,6 +33,7 @@ public class PDFMetadata {
   }
 
   public static void SaveMetaToDocument(PDDocument document, XMPMeta meta) throws Exception {
+    
     // Serialize the XMPMeta & convert it back to an OutputStream so PDFBox'
     // metadata can ingest it
     OutputStream xmpOutputStream = new ByteArrayOutputStream();
@@ -39,35 +41,16 @@ public class PDFMetadata {
     serializer.serialize(meta, xmpOutputStream, new SerializeOptions());
     byte[] xmpBytes = xmpOutputStream.toString().getBytes();
 
-    // System.out.println(xmpOutputStream.toString());
-
     PDMetadata metadata = document.getDocumentCatalog().getMetadata();
     metadata.importXMPMetadata(xmpBytes);
     document.getDocumentCatalog().setMetadata(metadata);
   }
 
-  public static void setXmpArrayProperty(XMPMeta meta, String propName, String value) throws Exception {
-    setXmpArrayProperty(meta, propName, value, null);
-  }
-
-  public static void setXmpArrayProperty(XMPMeta meta, String propName, String value, PropertyOptions propOptions)
+  public static void setXmpArrayProperty(XMPMeta meta, String propName, List<String> value)
       throws Exception {
 
-    if (value.isBlank())
-      return;
-
-    meta.setArrayItem(XMPConst.NS_DC, propName, 1, value, propOptions);
-  }
-
-  public static void setXmpArrayProperty(XMPMeta meta, String propName, String[] value)
-      throws Exception {
-    setXmpArrayProperty(meta, propName, value, null);
-  }
-
-  public static void setXmpArrayProperty(XMPMeta meta, String propName, String[] value, PropertyOptions propOptions)
-      throws Exception {
-
-    if (value.length == 0)
+    // If the value is empty, don't do anything
+    if (value.size() == 0)
       return;
 
     // Completely clear/remove the old array
@@ -75,12 +58,13 @@ public class PDFMetadata {
       meta.deleteProperty(XMPConst.NS_DC, propName);
     }
 
+    // Set the array options; we want an array to be created if it doesn't exist (it shouldn't)
     PropertyOptions options = new PropertyOptions();
     options.setArray(true);
 
     // Append the new items
     for (String part : value) {
-      meta.appendArrayItem(XMPConst.NS_DC, propName, options, part, propOptions);
+      meta.appendArrayItem(XMPConst.NS_DC, propName, options, part, null);
     }
   }
 

@@ -189,7 +189,7 @@
                 "const": "renameLayerLabel"
               },
               "from": {
-                "description": "Current name. If empty or missing, will rename first label encountered",
+                "description": "Current name. If empty or missing, rename all labels (up to maxTimes)",
                 "type": "string"
               },
               "to": {
@@ -197,7 +197,7 @@
                 "type": "string"
               },
               "maxTimes": {
-                "description": "The max number of labels to rename",
+                "description": "The max number of matching labels to rename",
                 "type": "integer"
               }
             },
@@ -205,6 +205,46 @@
               "from",
               "to"
             ]
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "description": "Rename a layer. If no 'from' is specified, will rename first layer found, if any",
+                "const": "renameLayer"
+              },
+              "from": {
+                "description": "Current name. If empty or missing, rename all layers (up to maxTimes)",
+                "type": "string"
+              },
+              "to": {
+                "description": "New name",
+                "type": "string"
+              },
+              "maxTimes": {
+                "description": "The max number of matching layers to rename",
+                "type": "integer"
+              }
+
+            }
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "description": "Set a layer as enabled or disabled",
+                "const": "enableLayer"
+              },
+              "layerName": {
+                "description": "The layer to enable or disable",
+                "type":"string"
+              },
+              "enabled": {
+                "description": "Whether the layer is to be enabled",
+                "type":"boolean"
+              }
+            },
+            "required": ["layerName"]
           }
         ]
       }

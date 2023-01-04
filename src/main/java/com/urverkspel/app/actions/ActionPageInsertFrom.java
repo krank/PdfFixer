@@ -1,4 +1,4 @@
-package com.urverkspel.app;
+package com.urverkspel.app.actions;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,6 +11,8 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.json.JSONObject;
 
+import com.urverkspel.app.*;
+
 public class ActionPageInsertFrom extends Configuration.Action {
 
   Path sourceFile = null;
@@ -18,22 +20,18 @@ public class ActionPageInsertFrom extends Configuration.Action {
   int targetPageNum = -1;
   RangeCollection sourcePageRanges = null;
 
-  public ActionPageInsertFrom(Configuration config) {
-    super(config);
-  }
+  public ActionPageInsertFrom(Configuration config, JSONObject configFragment) {
+    super(config, configFragment);
 
-  @Override
-  public void Load(JSONObject configFragment) {
-
-    String sourceFileName = Configuration.GetStringIfKeyExists("sourceFile", configFragment);
-
-    sourceFile = config.GetConfigRelativePath(sourceFileName);
-
-    sourcePageNum = Configuration.GetIntIfKeyExists("sourcePage", configFragment) - 1;
-    targetPageNum = Configuration.GetIntIfKeyExists("beforePage", configFragment) - 1;
-
-    String sourcePagesString = Configuration.GetStringIfKeyExists("sourcePageRange", configFragment);
-
+    String sourceFileName = Configuration.getStringIfKeyExists("sourceFile", configFragment);
+  
+    sourceFile = config.getConfigRelativePath(sourceFileName);
+  
+    sourcePageNum = Configuration.getIntIfKeyExists("sourcePage", configFragment) - 1;
+    targetPageNum = Configuration.getIntIfKeyExists("beforePage", configFragment) - 1;
+  
+    String sourcePagesString = Configuration.getStringIfKeyExists("sourcePageRange", configFragment);
+  
     if (sourcePagesString != null && !sourcePagesString.isEmpty()) {
       sourcePageRanges = new RangeCollection(sourcePagesString);
     }
@@ -104,10 +102,10 @@ public class ActionPageInsertFrom extends Configuration.Action {
   @Override
   public String GetName() {
     if (sourcePageRanges != null) {
-      return "Inserting pages " + sourcePageRanges.toString() + " from " + sourceFile.getFileName() + " to page "
+      return "Inserting pages " + sourcePageRanges.toString() + " from '" + sourceFile.getFileName() + "'' at page "
           + (targetPageNum + 1);
     } else if (sourcePageNum >= 0) {
-      return "Inserting page " + (sourcePageNum + 1) + " from " + sourceFile.getFileName() + " to page "
+      return "Inserting page " + (sourcePageNum + 1) + " from '" + sourceFile.getFileName() + "'' at page "
           + (targetPageNum + 1);
     } else {
       return "Inserting pages from " + sourceFile.getFileName() + " to page " + targetPageNum;

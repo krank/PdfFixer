@@ -1,10 +1,13 @@
 package com.urverkspel.app;
 
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.json.JSONArray;
@@ -13,6 +16,8 @@ import org.json.JSONObject;
 
 import com.diogonunes.jcolor.Attribute;
 import static com.diogonunes.jcolor.Ansi.colorize;
+
+import com.urverkspel.app.actions.*;
 
 public class Configuration {
 
@@ -35,9 +40,9 @@ public class Configuration {
     JSONObject configObject = new JSONObject(configJson);
 
     // Get the config contents
-    name = GetStringIfKeyExists("configName", configObject);
-    inputFileName = GetStringIfKeyExists("inputFileName", configObject);
-    outputFileName = GetStringIfKeyExists("outputFileName", configObject);
+    name = getStringIfKeyExists("configName", configObject);
+    inputFileName = getStringIfKeyExists("inputFileName", configObject);
+    outputFileName = getStringIfKeyExists("outputFileName", configObject);
 
     // Check for actions
     if (configObject.has("actions")) {
@@ -50,9 +55,7 @@ public class Configuration {
       }
     }
 
-    if (!sanityCheck()) {
-      throw new Exception("Configuration sanity check failed");
-    }
+    sanityCheck();
 
   }
 
@@ -67,28 +70,42 @@ public class Configuration {
       // Create the action based on the action name
       Action newAction = null;
 
+      // Metadata
       if (actionName.equals("setMetadata")) {
-        newAction = new ActionMetadata(this);
+        newAction = new ActionMetadata(this, actionConfig);
+
+        // Layers
       } else if (actionName.equals("removeLayers")) {
-        newAction = new ActionLayerRemoval(this);
-      } else if (actionName.equals("addBlankPage")) {
-        newAction = new ActionBlankPageInsert(this);
-      } else if (actionName.equals("deletePage")) {
-        newAction = new ActionPageDelete(this);
+        newAction = new ActionLayerRemove(this, actionConfig);
+
+      } else if (actionName.equals("renameLayer")) {
+        newAction = new ActionLayerRename(this, actionConfig);
+
       } else if (actionName.equals("renameLayerLabel")) {
-        newAction = new ActionLabelRename(this);
+        newAction = new ActionLabelRename(this, actionConfig);
+
+      } else if (actionName.equals("enableLayer")) {
+        newAction = new ActionLayerEnable(this, actionConfig);
+
+        // Pages
+      } else if (actionName.equals("addBlankPage")) {
+        newAction = new ActionBlankPageInsert(this, actionConfig);
+
       } else if (actionName.equals("insertFrom")) {
-        newAction = new ActionPageInsertFrom(this);
+        newAction = new ActionPageInsertFrom(this, actionConfig);
+
+      } else if (actionName.equals("deletePage")) {
+        newAction = new ActionPageDelete(this, actionConfig);
+
       } else {
         return;
       }
 
-      newAction.Load(actionConfig);
       actions.add(newAction);
     }
   }
 
-  public void ApplyActionsTo(PDDocument document) throws Exception {
+  public void applyActionsTo(PDDocument document) throws Exception {
     for (Action action : actions) {
       try {
         System.out.print(" * " + action.GetName() + " ...");
@@ -101,49 +118,36 @@ public class Configuration {
     }
   }
 
-  public Boolean sanityCheck() {
+  public Boolean sanityCheck() throws Exception {
     Path outputFile = null;
     Path inputFile = null;
 
     // Check input & output file validity
-    try {
-      outputFile = Paths.get(configPath.toString(), outputFileName);
-      inputFile = Paths.get(configPath.toString(), inputFileName);
-    } catch (InvalidPathException ex) {
-      if (outputFile == null)
-        System.out.println("Output file not valid");
-      if (inputFile == null)
-        System.out.println("input file not valid");
-      return false;
-    }
+    outputFile = Paths.get(configPath.toString(), outputFileName);
+    inputFile = Paths.get(configPath.toString(), inputFileName);
 
     // Check input file exists & is readable
-    if (Files.notExists(GetInputFile())) {
-      System.out.println("Input file not found");
-      return false;
+    if (Files.notExists(getInputFile())) {
+      throw new NoSuchFileException("Input file not found");
     }
 
     if (!Files.isReadable(inputFile)) {
-      System.out.println("Input file not readable");
-      return false;
+      throw new Exception("Input file not readable");
     }
 
     if (Files.exists(outputFile) && !Files.isWritable(outputFile)) {
-      System.out.println("Output file not writable");
-      return false;
+      throw new AccessDeniedException("Output file not writable");
     }
 
     // Check that input and output files are different
     if (outputFile.toAbsolutePath().equals(inputFile.toAbsolutePath())) {
-      System.out.println("Output file & input file cannot be the same");
-      return false;
+      throw new Exception("Output file & input file cannot be the same");
     }
 
-    System.out.println("Config is valid.");
     return true;
   }
 
-  public static String GetStringIfKeyExists(String key, JSONObject object) {
+  public static String getStringIfKeyExists(String key, JSONObject object) {
     try {
       return object.getString(key);
     } catch (JSONException e) {
@@ -151,7 +155,7 @@ public class Configuration {
     }
   }
 
-  public static Integer GetIntIfKeyExists(String key, JSONObject object) {
+  public static Integer getIntIfKeyExists(String key, JSONObject object) {
     try {
       return object.getInt(key);
     } catch (JSONException e) {
@@ -159,42 +163,50 @@ public class Configuration {
     }
   }
 
-  public static String[] GetStringArrayIfKeyExists(String key, JSONObject object) {
+  public static Boolean getBooleanIfKeyExists(String key, JSONObject object) {
+    try {
+      return object.getBoolean(key);
+    } catch (JSONException e) {
+      return false;
+    }
+  }
+
+  public static List<String> getStringArrayIfKeyExists(String key, JSONObject object) {
 
     JSONArray items;
 
     try {
       items = object.getJSONArray(key);
     } catch (JSONException e) {
-      return new String[0];
+      return Collections.emptyList();
     }
 
-    String[] stringArray = new String[items.length()];
+    ArrayList<String> stringList = new ArrayList<String>();
 
-    for (int i = 0; i < stringArray.length; i++) {
-      stringArray[i] = items.getString(i);
+    for (int i = 0; i < items.length(); i++) {
+      stringList.add(items.getString(i));
     }
 
-    return stringArray;
+    return stringList;
   }
-  
+
   public static void writeSubReport(String message) {
     System.out.println(subReportIndent + message);
   }
 
-  public Path GetConfigPath() {
+  public Path getConfigPath() {
     return configPath;
   }
 
-  public Path GetConfigRelativePath(String path) {
+  public Path getConfigRelativePath(String path) {
     return Paths.get(configPath.toString(), path).normalize();
   }
 
-  public Path GetInputFile() {
+  public Path getInputFile() {
     return Paths.get(configPath.toString(), inputFileName);
   }
 
-  public Path GetOutputFile() {
+  public Path getOutputFile() {
     return Paths.get(configPath.toString(), outputFileName);
   }
 
@@ -206,11 +218,9 @@ public class Configuration {
 
     protected Configuration config;
 
-    public Action(Configuration config) {
+    public Action(Configuration config, JSONObject configFragment) {
       this.config = config;
     }
-
-    public abstract void Load(JSONObject configFragment);
 
     public abstract void ApplyTo(PDDocument document) throws Exception;
 

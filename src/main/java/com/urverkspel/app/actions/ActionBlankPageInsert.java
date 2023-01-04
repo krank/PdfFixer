@@ -1,19 +1,17 @@
-package com.urverkspel.app;
+package com.urverkspel.app.actions;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.json.JSONObject;
+
+import com.urverkspel.app.*;
 
 public class ActionBlankPageInsert extends Configuration.Action {
 
   int pageTarget = 0;
   
-  public ActionBlankPageInsert(Configuration config) {
-    super(config);
-  }
-
-  @Override
-  public void Load(JSONObject configFragment) {
-    pageTarget = Configuration.GetIntIfKeyExists("beforePage", configFragment) - 1;
+  public ActionBlankPageInsert(Configuration config, JSONObject configFragment) {
+    super(config, configFragment);
+    pageTarget = Configuration.getIntIfKeyExists("beforePage", configFragment) - 1;
   }
 
   @Override
@@ -25,7 +23,7 @@ public class ActionBlankPageInsert extends Configuration.Action {
 
   @Override
   public String GetName() {
-    return "Inserting new blank page before p." + (pageTarget + 1);
+    return "Inserting new blank page before page" + (pageTarget + 1);
   }
 
 }

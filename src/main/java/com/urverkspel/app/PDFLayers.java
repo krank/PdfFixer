@@ -24,12 +24,34 @@ import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentPrope
 
 public class PDFLayers {
 
-  public static void printLayerNames(PDDocument document) {
-    PDOptionalContentProperties props = document.getDocumentCatalog().getOCProperties();
+  public static void setLayerEnabled(PDDocument document, String layerName, boolean enabled)
+  {
+    // Get the optional content properties dictionary
+    PDDocumentCatalog catalog = document.getDocumentCatalog();
+    PDOptionalContentProperties ocprops = catalog.getOCProperties();
 
-    String[] names = props.getGroupNames();
-    for (String name : names) {
-      System.out.println(name);
+    ocprops.setGroupEnabled(layerName, enabled);
+  }
+
+  public static void renameLayer(PDDocument document, String oldName, String newName, int maxTimes) throws Exception {
+    COSDictionary ocgsDict = (COSDictionary) document.getDocumentCatalog().getOCProperties().getCOSObject();
+    COSArray ocgs = (COSArray) ocgsDict.getItem(COSName.OCGS);
+    
+    for (int i = 0; i < ocgs.size(); i++) {
+      
+      COSDictionary ocgDict = getOCG(ocgs, i);
+      COSString name = (COSString) ocgDict.getItem(COSName.NAME);
+
+      if (name.getString().equals(oldName) || oldName.isBlank()) {
+
+        ocgDict.setString(COSName.NAME, newName);
+        ocgsDict.setItem(COSName.OCGS, ocgs);
+        
+        maxTimes--;
+        if (maxTimes == 0) {
+          break;
+        }
+      }
     }
   }
 
@@ -75,37 +97,18 @@ public class PDFLayers {
         break;
       }
     }
-
-    COSObject orderSubCOS = (COSObject) orderArray.get(0);
-    COSArray orderSubArray = (COSArray) orderSubCOS.getObject();
-
-    // Iterate over the array and find the string we want to replace
-    for (int i = 0; i < orderSubArray.size(); i++) {
-      COSBase orderedItem = orderSubArray.get(i);
-      if (orderedItem instanceof COSString) {
-        COSString labelString = (COSString) orderedItem;
-        if (labelString.getString().equals(oldName) || oldName.isBlank()) {
-          orderSubArray.set(i, new COSString(newName));
-          break;
-        }
-      }
-    }
   }
 
   public static void removeLayersFromDocumentCatalog(PDDocumentCatalog catalog, List<String> layersToRemove) {
 
-    PDOptionalContentProperties props = catalog.getOCProperties();
-
-    // Remove the OCGs
-    COSDictionary ocgsDict = (COSDictionary) props.getCOSObject();
+    COSDictionary ocgsDict = (COSDictionary) catalog.getOCProperties().getCOSObject();
     COSArray ocgs = (COSArray) ocgsDict.getItem(COSName.OCGS);
 
     List<Integer> toRemove = new ArrayList<Integer>();
 
     for (int i = 0; i < ocgs.size(); i++) {
 
-      COSObject o = (COSObject) ocgs.get(i);
-      COSDictionary dict = (COSDictionary) o.getObject();
+      COSDictionary dict = getOCG(ocgs, i);
 
       if (layersToRemove.contains(dict.getString(COSName.NAME))) {
         toRemove.add(i);
@@ -116,7 +119,6 @@ public class PDFLayers {
       ocgs.remove(toRemove.get(i));
     }
 
-    ocgsDict.setItem(COSName.OCGS, ocgs);
   }
 
   public static void removeLayerContentFromPage(PDPage page, List<String> layersToRemove, PDDocument document)
@@ -193,6 +195,19 @@ public class PDFLayers {
     PDStream newStream = PDFTokens.makeStreamFromTokenList(newTokens, document);
     page.setContents(newStream);
 
+  }
+
+  private static COSDictionary getOCG(COSArray ocgs, int i) {
+
+    COSDictionary dict = null;
+    if (ocgs.get(i) instanceof COSObject) {
+      COSObject o = (COSObject) ocgs.get(i);
+      dict = (COSDictionary) o.getObject();
+    } else if (ocgs.get(i) instanceof COSDictionary) {
+      dict = (COSDictionary) ocgs.get(i);
+    }
+
+    return dict;
   }
 
   private static String isOCGBeginning(List<Object> tokens, PDResources pageResources) {

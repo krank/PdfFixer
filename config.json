@@ -16,14 +16,6 @@
       ]
     },
     {
-      "action": "removeLayers",
-      "layerNames": [
-        "Grid",
-        "Göm på PDF",
-        "Guides and Grids"
-      ]
-    },
-    {
       "action": "addBlankPage",
       "beforePage": 1
     },
@@ -40,9 +32,29 @@
       "sourcePage": 2
     },
     {
+      "action": "removeLayers",
+      "layerNames": [
+        "Grid",
+        "Göm på PDF",
+        "Guides and Grids"
+      ]
+    },
+    {
       "action": "renameLayerLabel",
       "from": "Alla kungens hästar, alla kungens män.indb",
       "to": "Alla Kungens Hästar"
+    },
+    {
+      "action": "renameLayer",
+      "from": "Layer 1",
+      "to": "Framsida",
+      "maxTimes": 1
+    },
+    {
+      "action": "renameLayer",
+      "from": "Layer 1",
+      "to": "Baksida",
+      "maxTimes": 1
     },
     {
       "action": "renameLayerLabel",
@@ -55,6 +67,11 @@
       "from": "Omslag-separerade.indd",
       "to": "Baksida",
       "maxTimes": 1
+    },
+    {
+      "action":"enableLayer",
+      "layerName": "Framsida",
+      "enabled": false
     }
   ]
 }

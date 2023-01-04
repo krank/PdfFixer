@@ -20,15 +20,17 @@ import static com.diogonunes.jcolor.Ansi.colorize;
  * x Make exe
  * x Insert specific pages from one PDF into another, at specified locations (including first/last)
  * x Use config file's working directory as base for relative paths
- * TODO: Fix bug w/ multiple layer order groups
- * TODO: Rename layers
-
- * TODO: LOWPRIO Extract page/s (range) to specified file
- * TODO: LOWPRIO reorder layers
+ * x BUG: Fix bug w/ multiple layer order groups
+ * x BUG: Fix bug w/ multiple layers with the same name?
+ * x: Rename layers
+ * TODO: Enable/disable layer
+ * TODO: enable use of regex for layer & label names
+ * TODO: Rename layers under a specific label
+ * TODO: Extract page/s (range) to specified file
  * TODO: LOWPRIO move layer to below another label
  * TODO: LOWPRIO create new label
- * TODO: LOWPRIO delete label
  * TODO: LOWPRIO moving/reordering pages
+ * TODO: LOWPRIO reorder layers
  * TODO: LOWPRIO Dryruns & reports
  * TODO: LOWPRIO Simple UI for making configs
  * 
@@ -61,17 +63,17 @@ public class App {
     System.out.println("Following instructions from '" + configuration.getName() + "' [" + configFilename + "]");
 
     // Load input document
-    Path pdfFile = configuration.GetInputFile();
+    Path pdfFile = configuration.getInputFile();
 
     System.out.println("\nReading [" + pdfFile.toString() + "]");
     PDDocument document = Loader.loadPDF(pdfFile.toFile());
 
     // Apply actions to document
     System.out.println("\nApplying actions:");
-    configuration.ApplyActionsTo(document);
+    configuration.applyActionsTo(document);
 
     // Save resulting file
-    Path outputFile = configuration.GetOutputFile();
+    Path outputFile = configuration.getOutputFile();
     System.out.println("\nSaving file to [" + outputFile + "] ... \n");
     document.save(outputFile.toFile());
     System.out.println(colorize("Done!", Attribute.GREEN_TEXT()));

@@ -1,6 +1,5 @@
-package com.urverkspel.app;
+package com.urverkspel.app.actions;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -8,19 +7,18 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.json.JSONObject;
 
-public class ActionLayerRemoval extends Configuration.Action {
+import com.urverkspel.app.*;
+
+public class ActionLayerRemove extends Configuration.Action {
 
   List<String> layersToRemove;
   
-  public ActionLayerRemoval(Configuration config) {
-    super(config);
+  public ActionLayerRemove(Configuration config, JSONObject configFragment) {
+    super(config, configFragment);
+
+    layersToRemove = Configuration.getStringArrayIfKeyExists("layerNames", configFragment);
   }
 
-  @Override
-  public void Load(JSONObject configFragment) {
-    layersToRemove = Arrays.asList(Configuration.GetStringArrayIfKeyExists("layerNames", configFragment));
-
-  }
 
   @Override
   public void ApplyTo(PDDocument document) throws Exception {
