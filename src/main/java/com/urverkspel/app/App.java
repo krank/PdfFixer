@@ -22,7 +22,7 @@ import static com.diogonunes.jcolor.Ansi.colorize;
  * x Use config file's working directory as base for relative paths
  * x BUG: Fix bug w/ multiple layer order groups
  * x BUG: Fix bug w/ multiple layers with the same name?
- * x: Rename layers
+ * x Rename layers
  * x Enable/disable layer
  * TODO: enable use of regex for layer & label names
  * TODO: Rename layers under a specific label
@@ -41,7 +41,7 @@ public class App {
 
   public static void main(String[] args) throws Exception {
 
-    System.out.println("--- PDF Fixer ---");
+    System.out.println("--- PDF Fixer 0.1.0 ---");
 
     // Decide on config file to load
     String configFilename = "config.json";

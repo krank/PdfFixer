@@ -6,7 +6,7 @@
 
   <groupId>com.urverkspel.app</groupId>
   <artifactId>pdffixer</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.1.0</version>
 
   <name>pdffixer</name>
   <!-- FIXME change it to the project's website -->

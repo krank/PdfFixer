@@ -3,14 +3,9 @@ package com.urverkspel.app;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.apache.pdfbox.pdfparser.PDFStreamParser;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDResources;
-import org.apache.pdfbox.pdmodel.common.PDStream;
-import org.apache.pdfbox.pdmodel.documentinterchange.markedcontent.PDPropertyList;
 import org.apache.pdfbox.contentstream.operator.Operator;
 import org.apache.pdfbox.contentstream.operator.OperatorName;
 import org.apache.pdfbox.cos.COSArray;
@@ -19,13 +14,19 @@ import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.cos.COSString;
+import org.apache.pdfbox.pdfparser.PDFStreamParser;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.common.PDStream;
+import org.apache.pdfbox.pdmodel.documentinterchange.markedcontent.PDPropertyList;
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentGroup;
 import org.apache.pdfbox.pdmodel.graphics.optionalcontent.PDOptionalContentProperties;
 
 public class PDFLayers {
 
-  public static void setLayerEnabled(PDDocument document, String layerName, boolean enabled)
-  {
+  public static void setLayerEnabled(PDDocument document, String layerName, boolean enabled) {
     // Get the optional content properties dictionary
     PDDocumentCatalog catalog = document.getDocumentCatalog();
     PDOptionalContentProperties ocprops = catalog.getOCProperties();
@@ -36,23 +37,31 @@ public class PDFLayers {
   public static void renameLayer(PDDocument document, String oldName, String newName, int maxTimes) throws Exception {
     COSDictionary ocgsDict = (COSDictionary) document.getDocumentCatalog().getOCProperties().getCOSObject();
     COSArray ocgs = (COSArray) ocgsDict.getItem(COSName.OCGS);
-    
+
     for (int i = 0; i < ocgs.size(); i++) {
-      
+
       COSDictionary ocgDict = getOCG(ocgs, i);
       COSString name = (COSString) ocgDict.getItem(COSName.NAME);
 
-      if (name.getString().equals(oldName) || oldName.isBlank()) {
+      if (oldName.isBlank() || areNamesEqual(oldName, name.getString())) {
 
         ocgDict.setString(COSName.NAME, newName);
         ocgsDict.setItem(COSName.OCGS, ocgs);
-        
+
         maxTimes--;
         if (maxTimes == 0) {
           break;
         }
       }
     }
+  }
+
+  public static boolean areNamesEqual(String oldName, String newName) {
+
+    Pattern pattern = Pattern.compile(oldName);
+    Matcher matcher = pattern.matcher(newName);
+
+    return matcher.matches();
   }
 
   public static void renameLabel(PDDocument document, String oldName, String newName, int maxTimes) {
@@ -85,7 +94,7 @@ public class PDFLayers {
         COSBase orderedItem = orderSubArray.get(j);
         if (orderedItem instanceof COSString) {
           COSString labelString = (COSString) orderedItem;
-          if (labelString.getString().equals(oldName) || oldName.isBlank()) {
+          if (oldName.isBlank() || areNamesEqual(oldName, labelString.getString())) {
             orderSubArray.set(j, new COSString(newName));
             maxTimes--;
             break;
@@ -108,9 +117,11 @@ public class PDFLayers {
 
     for (int i = 0; i < ocgs.size(); i++) {
 
-      COSDictionary dict = getOCG(ocgs, i);
+      COSDictionary ocg = getOCG(ocgs, i);
 
-      if (layersToRemove.contains(dict.getString(COSName.NAME))) {
+      layersToRemove.stream().anyMatch(p -> areNamesEqual(p, ocg.getString(COSName.NAME)));
+
+      if (layersToRemove.stream().anyMatch(p -> areNamesEqual(p, ocg.getString(COSName.NAME)))) {
         toRemove.add(i);
       }
     }
@@ -167,8 +178,9 @@ public class PDFLayers {
             mcLevel--;
           }
           if (mcLevel == 0 && currentLayer != null) {
+            final String currentLayerFinal = currentLayer;
 
-            if (layersToRemove.contains(currentLayer)) {
+            if (layersToRemove.stream().anyMatch(p -> areNamesEqual(p, currentLayerFinal))) {
               line.clear(); // EMC tokens that end a hidden layer should not be included
             }
 
@@ -184,8 +196,6 @@ public class PDFLayers {
             newTokens.add(token);
           }
         }
-
-        // System.out.println(PDFTokens.makeLineString(line));
 
         line.clear();
       }
