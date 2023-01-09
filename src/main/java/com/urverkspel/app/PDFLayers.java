@@ -31,7 +31,12 @@ public class PDFLayers {
     PDDocumentCatalog catalog = document.getDocumentCatalog();
     PDOptionalContentProperties ocprops = catalog.getOCProperties();
 
-    ocprops.setGroupEnabled(layerName, enabled);
+    // Loop through all the optional content groups
+    for (PDOptionalContentGroup ocg : ocprops.getOptionalContentGroups()) {
+      if (areNamesEqual(layerName, ocg.getName())) {
+        ocprops.setGroupEnabled(ocg, enabled);
+      }
+    }
   }
 
   public static void renameLayer(PDDocument document, String oldName, String newName, int maxTimes) throws Exception {

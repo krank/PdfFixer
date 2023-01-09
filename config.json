@@ -70,7 +70,7 @@
     },
     {
       "action":"enableLayer",
-      "layerName": "Framsida",
+      "layerName": "Frams.*",
       "enabled": false
     }
   ]
